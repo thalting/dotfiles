@@ -1,0 +1,53 @@
+# lf config
+set autoquit
+set ifs "\n"
+set scrolloff 10
+set incsearch
+set relativenumber
+
+cmd open ${{
+    case $(file --mime-type "$(readlink -f $f)" -b) in
+    application/vnd.openxmlformats-officedocument.spreadsheetml.sheet) localc $fx ;;
+    image/vnd.djvu|application/pdf|application/octet-stream|application/postscript) setsid -f zathura $fx >/dev/null 2>&1 ;;
+    text/*|application/json|inode/x-empty) $EDITOR $fx;;
+    image/x-xcf) setsid -f gimp $f >/dev/null 2>&1 ;;
+    image/*) devour nsxiv $f ;;
+    audio/*) mpv --audio-display=no $fx ;;
+    video/*) setsid -f devour mpv $fx -quiet >/dev/null 2>&1 ;;
+    application/pdf|application/vnd*|application/epub*) setsid -f zathura $fx >/dev/null 2>&1 ;;
+    esac
+}}
+
+cmd unarchive ${{
+    case "$f" in
+        *.tar.gz) tar -xzvf "$f" ;;
+        *.tar.bz2) tar -xjvf "$f" ;;
+        *.tar) tar -xvf "$f" ;;
+        *) echo "Unsupported format" ;;
+    esac
+}}
+
+cmd bulkrename $vidir
+cmd exec %exec "$f"
+cmd tar %tar cvf "$f.tar" "$f"
+cmd targz %tar cvzf "$f.tar.gz" "$f"
+cmd tarbz2 %tar cjvf "$f.tar.bz2" "$f"
+
+map <enter> shell
+map x :exec
+map ç :push :
+map o open
+map D delete
+map R bulkrename
+map gc cd ~/.config
+map au unarchive
+map at tar
+map ag targz
+map ab tarbz2
+map <esc> clear
+map <c-space> toggle
+map <delete> delete
+map <backspace2> set hidden!
+map . set hidden!
+
+cmd q :quit

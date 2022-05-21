@@ -1,0 +1,20 @@
+#!/bin/sh
+
+setxkbmap br
+
+xrdb $HOME/.Xresources
+
+xwallpaper --zoom $HOME/pictures/wallpapers/Ghibli.jpg
+
+xset s off -dpms
+
+xmodmap -e "pointer = 3 2 1"
+
+xbanish &
+
+sxhkd &
+
+pgrep -x -t $(tty) notdaemon >> /dev/null || notdaemon &
+pgrep -x -t $(tty) statusbar >> /dev/null || statusbar &
+
+dwm

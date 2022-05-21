@@ -1,0 +1,64 @@
+super + Escape
+    pkill -USR1 -x sxhkd
+
+super + Return
+    st
+
+super + p
+    drun
+
+super + {k,j}
+    dwmc focusstack {-,+}1
+
+super + shift + {k,j}
+    dwmc movestack {-,+}1
+
+super + {h,l}
+    dwmc setmfact {-,+}0.05
+
+super + b
+    dwmc togglebar
+
+super + shift + space
+    dwmc togglefloating
+
+super + shift + Return
+    dwmc zoom
+
+super + q
+    dwmc killclient
+
+super + shift + q
+    dwmc quit
+
+# wtf this works
+super + Tab
+    dwmc viewex 10
+
+super + {t,f,m}
+    dwmc setlayoutex {0,1,2}
+
+super + {_,ctrl +}{_,shift +} {1-9}
+    dwmc {_,toggle}{viewex,tagex} {0-8}
+
+# for 0 workspace
+super + {_,ctrl +}{_,shift +} 0
+    dwmc {_,toggle}{viewex,tagex} 9
+
+XF86AudioRaiseVolume
+    pamixer -i 5
+
+XF86AudioLowerVolume
+    pamixer -d 5
+
+XF86AudioMute
+    pamixer -t
+
+XF86AudioPlay
+    playerctl play-pause
+
+XF86AudioNext
+    playerctl next
+
+XF86AudioPrev
+    playerctl stop

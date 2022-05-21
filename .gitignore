@@ -1,0 +1,9 @@
+.config/cmus/*
+!.config/cmus/autosave
+!.config/cmus/dumb.theme
+
+.config/vimb/*
+!.config/vimb/config
+!.config/vimb/style.css
+
+
