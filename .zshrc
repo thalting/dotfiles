@@ -1,4 +1,3 @@
-# Sources
 source "$HOME/.local/share/miniplug.zsh"
 
 miniplug plugin 'hlissner/zsh-autopair'
@@ -94,3 +93,5 @@ case "$TERM" in (rxvt|rxvt-*|st|st-*|*xterm*|(dt|k|E)term)
     }
     ;;
 esac
+
+source "$HOME/.zsh_aliases"
