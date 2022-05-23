@@ -102,43 +102,20 @@ require("nvim-treesitter.configs").setup({
 
 require("formatter").setup({
     filetype = {
+        c = {
+            require("formatter.filetypes.cpp").clangformat,
+        },
         cpp = {
-            -- clang-format
-            function()
-                return {
-                    exe = "clang-format",
-                    args = {
-                        "--assume-filename",
-                        vim.api.nvim_buf_get_name(0),
-                    },
-                    stdin = true,
-                    cwd = vim.fn.expand("%:p:h"), -- Run clang-format in cwd of the file.
-                }
-            end,
+            require("formatter.filetypes.cpp").clangformat,
         },
         lua = {
-            function()
-                return {
-                    exe = "stylua",
-                    args = {
-                        "--config-path "
-                            .. os.getenv("XDG_CONFIG_HOME")
-                            .. "/stylua/stylua.toml",
-                        "-",
-                    },
-                    stdin = true,
-                }
-            end,
+            require("formatter.filetypes.lua").stylua,
         },
         rust = {
-            -- Rustfmt
-            function()
-                return {
-                    exe = "rustfmt",
-                    args = { "--emit=stdout", "--edition=2021" },
-                    stdin = true,
-                }
-            end,
+            require("formatter.filetypes.rust").rustfmt,
+        },
+        python = {
+            require("formatter.filetypes.python").yapf,
         },
     },
 })
