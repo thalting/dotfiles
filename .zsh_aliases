@@ -27,5 +27,7 @@ alias                                                       \
       dvi='doas nvim'                                       \
       podman='doas podman'                                  \
       orphans='pacman -Qtdq | doas pacman -Rns -'           \
+      reboot='doas reboot'                                  \
+      poweroff='doas poweroff'                              \
       xrdb-update='xrdb $HOME/.Xresources'                  \
       update-grub='doas grub-mkconfig -o /boot/grub/grub.cfg'
