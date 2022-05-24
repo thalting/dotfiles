@@ -15,8 +15,6 @@ capabilities = require("cmp_nvim_lsp").update_capabilities(capabilities)
 
 local lspconfig = require("lspconfig")
 
--- fix "Undefined global `vim`"
-
 -- Enable some language servers with the additional completion capabilities offered by nvim-cmp
 local servers = { "rust_analyzer", "clangd", "pylsp", "sumneko_lua" }
 for _, lsp in ipairs(servers) do
