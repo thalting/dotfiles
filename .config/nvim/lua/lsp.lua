@@ -31,7 +31,7 @@ lspconfig.sumneko_lua.setup({
 })
 
 -- Enable some language servers with the additional completion capabilities offered by nvim-cmp
-local servers = { "clangd", "pylsp" }
+local servers = { "rust_analyzer", "clangd", "pylsp" }
 for _, lsp in ipairs(servers) do
     lspconfig[lsp].setup({
         capabilities = capabilities,
