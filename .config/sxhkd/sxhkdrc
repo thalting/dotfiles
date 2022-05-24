@@ -7,6 +7,9 @@ super + Return
 super + p
     drun
 
+super + {d,i}
+    dwmc incnmaster {-,+}1
+
 super + {k,j}
     dwmc focusstack {-,+}1
 
