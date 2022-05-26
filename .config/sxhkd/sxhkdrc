@@ -64,4 +64,4 @@ XF86AudioNext
     playerctl next
 
 XF86AudioPrev
-    playerctl stop
+    playerctl previous
