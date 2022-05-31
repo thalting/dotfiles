@@ -11,7 +11,7 @@ dwm.gappx: 10
 dwm.borderpx: 4
 dwm.vertpad: 10
 dwm.sidepad: 10
-dwm.user_bh: 20
+dwm.user_bh: 22
 
 ! ----------------------------------------------------------
 ! nsxiv
