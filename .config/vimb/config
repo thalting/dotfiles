@@ -3,7 +3,7 @@ set home-page=file:///home/oliver/projects/homepage/index.html
 set download-path=~/downloads
 
 set editor-command=st -t floating -e nvim %s
-shortcut-add searx=https://paulgo.io/?q=$0
+shortcut-add searx=https://searx.be/?q=$0
 
 shortcut-default searx
 
