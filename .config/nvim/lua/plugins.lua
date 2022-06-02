@@ -1,11 +1,15 @@
 require("paq")({
     "savq/paq-nvim",
 
+    "sheerun/vim-polyglot",
+
     "nvim-lua/plenary.nvim",
 
     "williamboman/nvim-lsp-installer",
 
     "nvim-telescope/telescope.nvim",
+
+    "lewis6991/gitsigns.nvim",
 
     "neovim/nvim-lspconfig",
 
@@ -48,6 +52,14 @@ require("nvim-treesitter.configs").setup({
     },
 })
 
+require("nvim-web-devicons").setup({
+    override = {
+        zig = {
+            icon = "",
+        },
+    },
+})
+
 require("formatter").setup({
     filetype = {
         c = {
@@ -67,6 +79,8 @@ require("formatter").setup({
         },
     },
 })
+
+require("gitsigns").setup()
 
 require("telescope").setup()
 
