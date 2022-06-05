@@ -16,7 +16,14 @@ capabilities = require("cmp_nvim_lsp").update_capabilities(capabilities)
 local lspconfig = require("lspconfig")
 
 -- Enable some language servers with the additional completion capabilities offered by nvim-cmp
-local servers = { "rust_analyzer", "clangd", "pylsp", "sumneko_lua" }
+local servers = {
+    "rust_analyzer",
+    "clangd",
+    "pylsp",
+    "sumneko_lua",
+    "zls",
+    "gopls",
+}
 for _, lsp in ipairs(servers) do
     if lsp == "sumneko_lua" then
         lspconfig.sumneko_lua.setup({
@@ -27,6 +34,9 @@ for _, lsp in ipairs(servers) do
                     },
                     diagnostics = {
                         globals = { "vim" },
+                    },
+                    telemetry = {
+                        enable = false,
                     },
                 },
             },
