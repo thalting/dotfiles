@@ -57,6 +57,9 @@ require("nvim-web-devicons").setup({
         zig = {
             icon = "",
         },
+        nim = {
+            icon = "",
+        },
     },
 })
 
