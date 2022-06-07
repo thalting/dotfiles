@@ -1,3 +1,10 @@
+if [ ! -f "$HOME/.local/share/miniplug.zsh" ]; then
+    curl \
+        -sL --create-dirs \
+        https://git.sr.ht/~yerinalexey/miniplug/blob/master/miniplug.zsh \
+        -o $HOME/.local/share/miniplug.zsh
+fi
+
 source "$HOME/.local/share/miniplug.zsh"
 
 miniplug plugin 'hlissner/zsh-autopair'
@@ -85,7 +92,7 @@ case "$TERM" in (rxvt|rxvt-*|st|st-*|*xterm*|(dt|k|E)term)
         print -n "\e]0;${(j: :q)@}\a"
     }
     precmd() {
-      term_title "st"
+      term_title "tym"
     }
     preexec() {
       local CMD="${(j:\n:)${(f)1}}"
