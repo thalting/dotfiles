@@ -66,7 +66,7 @@ require("nvim-web-devicons").setup({
 require("formatter").setup({
     filetype = {
         c = {
-            require("formatter.filetypes.cpp").clangformat,
+            require("formatter.filetypes.c").clangformat,
         },
         cpp = {
             require("formatter.filetypes.cpp").clangformat,
@@ -74,6 +74,16 @@ require("formatter").setup({
         lua = {
             require("formatter.filetypes.lua").stylua,
         },
+        zig = {
+            function()
+                return {
+                    exe = "zig",
+                    args = { "fmt" },
+                    stdin = false,
+                }
+            end,
+        },
+
         rust = {
             require("formatter.filetypes.rust").rustfmt,
         },
