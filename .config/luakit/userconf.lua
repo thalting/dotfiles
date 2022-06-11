@@ -9,18 +9,25 @@ modes.remap_binds("normal", {
     { "<control-l>", "L", true },
 })
 
-modes.add_binds(
-    "normal",
+local video_cmd_fmt = "mpv '%s'"
+modes.add_binds("ex-follow", {
     {
-        {
-            "<Control-c>",
-            "Copy selected text.",
-            function()
-                luakit.selection.clipboard = luakit.selection.primary
-            end,
-        },
-    }
-)
+        "x",
+        "Hint all links and open the video behind that link externally with MPV.",
+        function(w)
+            w:set_mode("follow", {
+                prompt = "open with MPV",
+                selector = "uri",
+                evaluator = "uri",
+                func = function(uri)
+                    assert(type(uri) == "string")
+                    luakit.spawn(string.format(video_cmd_fmt, uri))
+                    w:notify("Launched MPV")
+                end,
+            })
+        end,
+    },
+})
 
 modes.add_binds("normal", {
     {
@@ -34,10 +41,21 @@ modes.add_binds("normal", {
             end
         end,
     },
+    {
+        "<Control-c>",
+        "Copy selected text.",
+        function()
+            luakit.selection.clipboard = luakit.selection.primary
+        end,
+    },
+    { "<Mouse8>", "gt", true },
+    { "<Mouse9>", "gT", true },
 })
 
 local settings = require("settings")
-settings.window.home_page = "file:///home/oliver/projects/homepage/index.html"
+settings.window.home_page = "file://"
+    .. os.getenv("HOME")
+    .. "/projects/homepage/index.html"
 
 local select = require("select")
 
