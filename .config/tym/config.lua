@@ -6,6 +6,7 @@ tym.set_config({
     isolated = true,
     padding_horizontal = 22,
     padding_vertical = 22,
+    scrollback_length = -1,
     color_window_background = "#0c0c0d",
     cursor_shape = "ibeam",
 })
