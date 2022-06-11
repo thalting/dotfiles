@@ -7,6 +7,8 @@ local modes = require("modes")
 modes.remap_binds("normal", {
     { "<control-h>", "H", true },
     { "<control-l>", "L", true },
+    { "<Mouse8>", "H", true },
+    { "<Mouse9>", "L", true },
 })
 
 local video_cmd_fmt = "mpv '%s'"
@@ -48,8 +50,6 @@ modes.add_binds("normal", {
             luakit.selection.clipboard = luakit.selection.primary
         end,
     },
-    { "<Mouse8>", "gt", true },
-    { "<Mouse9>", "gT", true },
 })
 
 local settings = require("settings")
