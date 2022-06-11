@@ -22,5 +22,3 @@
 
 [diff]
 	colorMoved = default
-[gpg]
-	program = /usr/bin/pinentry-curses
