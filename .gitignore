@@ -5,5 +5,3 @@
 .config/vimb/*
 !.config/vimb/config
 !.config/vimb/style.css
-
-.gitconfig
