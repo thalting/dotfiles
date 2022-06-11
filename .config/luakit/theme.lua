@@ -77,8 +77,8 @@ theme.trust_fg          = "#0F0"
 theme.notrust_fg        = "#F00"
 
 -- Follow mode hints
-theme.hint_font = "10pt monospace"
-theme.hint_fg = "#2d2d2d"
+theme.hint_font = "12pt monospace"
+theme.hint_fg = "#0c0c0d"
 theme.hint_bg = "#ffcc66"
 theme.hint_border = "1px dashed #ffcc66"
 theme.hint_opacity = "0.9"

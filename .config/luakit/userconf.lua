@@ -9,16 +9,42 @@ modes.remap_binds("normal", {
     { "<control-l>", "L", true },
 })
 
-modes.add_binds("normal", {{
-    "<Control-c>",
-    "Copy selected text.",
-    function ()
-        luakit.selection.clipboard = luakit.selection.primary
-    end
-}})
+modes.add_binds(
+    "normal",
+    {
+        {
+            "<Control-c>",
+            "Copy selected text.",
+            function()
+                luakit.selection.clipboard = luakit.selection.primary
+            end,
+        },
+    }
+)
+
+modes.add_binds("normal", {
+    {
+        "v",
+        "Play video in page",
+        function(w)
+            local view = w.view
+            local uri = view.hovered_uri or view.uri
+            if uri then
+                luakit.spawn(string.format("mpv %s", uri))
+            end
+        end,
+    },
+})
 
 local settings = require("settings")
 settings.window.home_page = "file:///home/oliver/projects/homepage/index.html"
+
+local select = require("select")
+
+select.label_maker = function()
+    local chars = charset("ASDFGHJKL")
+    return trim(sort(reverse(chars)))
+end
 
 local engines = settings.window.search_engines
 
@@ -35,4 +61,3 @@ window.add_signal("init", function(w)
         end
     end
 end)
-
