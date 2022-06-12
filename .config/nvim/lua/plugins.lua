@@ -68,6 +68,9 @@ require("formatter").setup({
         c = {
             require("formatter.filetypes.c").clangformat,
         },
+        go = {
+            require("formatter.filetypes.go").gofmt,
+        },
         cpp = {
             require("formatter.filetypes.cpp").clangformat,
         },
