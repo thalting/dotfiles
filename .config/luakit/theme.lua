@@ -82,9 +82,9 @@ theme.hint_fg = "#0c0c0d"
 theme.hint_bg = "#ffcc66"
 theme.hint_border = "1px dashed #ffcc66"
 theme.hint_opacity = "0.9"
-theme.hint_overlay_bg = "rgba(255,255,153,0.5)"
-theme.hint_overlay_border = "1px dotted #0c0c0d"
-theme.hint_overlay_selected_bg = "rgba(0,255,0,0.0)"
+theme.hint_overlay_bg = "rgba(255,255,153,0.0)"
+theme.hint_overlay_border = "rgba(0,0,0,0.0)"
+theme.hint_overlay_selected_bg = "rgba(255,255,153,0.6)"
 theme.hint_overlay_selected_border = theme.hint_overlay_border
 
 -- General colour pairings

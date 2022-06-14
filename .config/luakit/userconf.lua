@@ -11,12 +11,29 @@ modes.remap_binds("normal", {
     { "<Mouse9>", "L", true },
 })
 
-local video_cmd_fmt = "mpv '%s'"
-modes.add_binds("ex-follow", {
+modes.add_binds("normal", {
+    {
+        "y",
+        "Hint all links (as defined by the follow.selectors.uri selector) and set the clipboard selection to the matched elements URI.",
+        function(w)
+            w:set_mode("follow", {
+                prompt = "yank",
+                selector = "uri",
+                evaluator = "uri",
+                func = function(uri)
+                    assert(type(uri) == "string")
+                    uri = uri:gsub(" ", "%%20"):gsub("^mailto:", "")
+                    luakit.selection.clipboard = uri
+                    w:notify("Yanked uri: " .. uri, false)
+                end,
+            })
+        end,
+    },
     {
         "x",
         "Hint all links and open the video behind that link externally with MPV.",
         function(w)
+            local video_cmd_fmt = "mpv '%s'"
             w:set_mode("follow", {
                 prompt = "open with MPV",
                 selector = "uri",
@@ -29,9 +46,6 @@ modes.add_binds("ex-follow", {
             })
         end,
     },
-})
-
-modes.add_binds("normal", {
     {
         "v",
         "Play video in page",

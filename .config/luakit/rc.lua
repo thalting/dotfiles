@@ -71,8 +71,6 @@ require("settings_chrome")
 local adblock = require("adblock")
 local adblock_chrome = require("adblock_chrome")
 
-local webinspector = require("webinspector")
-
 -- Add uzbl-like form filling
 local formfiller = require("formfiller")
 
@@ -113,15 +111,6 @@ local downloads_chrome = require("downloads_chrome")
 
 downloads.default_dir = os.getenv("HOME") .. "/downloads"
 
--- Add automatic PDF downloading and opening
-local viewpdf = require("viewpdf")
-
--- Example using xdg-open for opening downloads / showing download folders
-downloads.add_signal("open-file", function(file)
-    luakit.spawn(string.format("xdg-open %q", file))
-    return true
-end)
-
 -- Add vimperator-like link hinting & following
 local follow = require("follow")
 
@@ -144,10 +133,6 @@ local binds_chrome = require("binds_chrome")
 -- Add command completion
 local completion = require("completion")
 
--- Press Control-E while in insert mode to edit the contents of the currently
--- focused <textarea> or <input> element, using `xdg-open`
-local open_editor = require("open_editor")
-
 -- NoScript plugin, toggle scripts and or plugins on a per-domain basis.
 -- `,ts` to toggle scripts, `,tp` to toggle plugins, `,tr` to reset.
 -- If you use this module, don't use any site-specific `enable_scripts` or
@@ -167,17 +152,11 @@ local error_page = require("error_page")
 -- Add userstyles loader
 local styles = require("styles")
 
--- Hide scrollbars on all pages
-local hide_scrollbars = require("hide_scrollbars")
-
 -- Add a stylesheet when showing images
 local image_css = require("image_css")
 
 -- Add a new tab page
 local newtab_chrome = require("newtab_chrome")
-
--- Add :view-source command
-local view_source = require("view_source")
 
 -- Put "userconf.lua" in your Luakit config dir with your own tweaks; if this is
 -- permanent, no need to copy/paste/modify the default rc.lua whenever you
