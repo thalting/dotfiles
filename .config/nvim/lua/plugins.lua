@@ -1,8 +1,6 @@
 require("paq")({
     "savq/paq-nvim",
 
-    "sheerun/vim-polyglot",
-
     "nvim-lua/plenary.nvim",
 
     "williamboman/nvim-lsp-installer",
@@ -49,6 +47,10 @@ require("surround").setup({
 require("nvim-treesitter.configs").setup({
     highlight = {
         enable = true,
+    },
+    indent = {
+        enable = true,
+        disable = { "python" },
     },
 })
 
