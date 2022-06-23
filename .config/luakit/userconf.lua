@@ -67,6 +67,7 @@ modes.add_binds("normal", {
 })
 
 local settings = require("settings")
+settings.webview.enable_smooth_scrolling = false
 settings.window.home_page = "file://"
     .. os.getenv("HOME")
     .. "/projects/homepage/index.html"
