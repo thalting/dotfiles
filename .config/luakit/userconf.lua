@@ -67,6 +67,13 @@ modes.add_binds("normal", {
 })
 
 local settings = require("settings")
+
+modes.add_binds("all", {
+    { "<Scroll>", "Scroll the current page.", function (w, o)
+        w:scroll { yrel = settings.window.scroll_step * o.dy }
+    end },
+})
+
 settings.webview.enable_smooth_scrolling = false
 settings.window.home_page = "file://"
     .. os.getenv("HOME")
