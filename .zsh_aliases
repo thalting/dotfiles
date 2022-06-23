@@ -25,7 +25,6 @@ alias                                                       \
       diff='diff --color=auto'                              \
       df='df -h'                                            \
       dvi='doas nvim'                                       \
-      podman='doas podman'                                  \
       orphans='pacman -Qtdq | doas pacman -Rns -'           \
       reboot='doas reboot'                                  \
       poweroff='doas poweroff'                              \
