@@ -18,11 +18,12 @@ local lspconfig = require("lspconfig")
 -- Enable some language servers with the additional completion capabilities offered by nvim-cmp
 local servers = {
     "rust_analyzer",
-    "clangd",
-    "pylsp",
     "sumneko_lua",
-    "zls",
+    "ocamllsp",
+    "pylsp",
     "gopls",
+    "ccls",
+    "zls",
 }
 for _, lsp in ipairs(servers) do
     if lsp == "sumneko_lua" then
