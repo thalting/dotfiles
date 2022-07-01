@@ -1,6 +1,9 @@
 # PATH
 PATH=~/.local/bin:$PATH
 
+# others
+eval $(opam env)
+
 # XDG vars
 export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_CACHE_HOME="$HOME/.cache"
