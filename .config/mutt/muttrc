@@ -14,11 +14,15 @@ set imap_user = halting@riseup.net
 set imap_pass = "`pass email/riseup`"
 set folder = imaps://halting@mail.riseup.net/
 set imap_check_subscribed
+set message_cachedir=~/.cache/mutt/messages
 
 # Folder
 set spoolfile = +INBOX
 set postponed = +Drafts
 set record = +Sent
+
+# Others
+set beep=no # Saving the world
 
 # GPG
 set pgp_decode_command = "gpg %?p?--passphrase-fd 0? --no-verbose --batch --output - %f"
@@ -44,14 +48,56 @@ set pgp_good_sign = "^gpg: Good signature from"
 # Colors
 color normal white default
 
-# Binds
+# General rebindings
+bind index gg first-entry
+bind index j next-entry
+bind index k previous-entry
+bind attach <return> view-mailcap
+bind attach l view-mailcap
+bind editor <space> noop
+bind index G last-entry
+bind index gg first-entry
+bind pager,attach h exit
 bind pager j next-line
 bind pager k previous-line
-bind attach,index,pager \CD next-page
-bind attach,index,pager \CU previous-page
-bind pager g top
+bind pager l view-attachments
+bind index D delete-message
+bind index U undelete-message
+bind index L limit
+bind index h noop
+bind index l display-message
+bind index,query <space> tag-entry
+macro browser h '<change-dir><kill-line>..<enter>' "Go to parent folder"
+bind browser l select-entry
+bind browser gg top-page
+bind browser G bottom-page
+bind pager gg top
 bind pager G bottom
-bind attach,index g first-entry
-bind attach,index G last-entry
+bind index,pager,browser d half-down
+bind index,pager,browser u half-up
+bind index,pager S sync-mailbox
+bind index,pager R group-reply
+bind index \031 previous-undeleted
+bind index \005 next-undeleted
+bind pager \031 previous-line
+bind pager \005 next-line
+bind editor <Tab> complete-query
 
-bind generic,alias,attach,browser,editor,index,compose,pager,pgp,postpone ':' noop
+macro index,pager gi "<change-folder>=INBOX<enter>" "go to inbox"
+macro index,pager Mi ";<save-message>=INBOX<enter>" "move mail to inbox"
+macro index,pager Ci ";<copy-message>=INBOX<enter>" "copy mail to inbox"
+macro index,pager gd "<change-folder>=Drafts<enter>" "go to drafts"
+macro index,pager Md ";<save-message>=Drafts<enter>" "move mail to drafts"
+macro index,pager Cd ";<copy-message>=Drafts<enter>" "copy mail to drafts"
+macro index,pager gj "<change-folder>=Junk<enter>" "go to junk"
+macro index,pager Mj ";<save-message>=Junk<enter>" "move mail to junk"
+macro index,pager Cj ";<copy-message>=Junk<enter>" "copy mail to junk"
+macro index,pager gt "<change-folder>=Trash<enter>" "go to trash"
+macro index,pager Mt ";<save-message>=Trash<enter>" "move mail to trash"
+macro index,pager Ct ";<copy-message>=Trash<enter>" "copy mail to trash"
+macro index,pager gs "<change-folder>=Sent<enter>" "go to sent"
+macro index,pager Ms ";<save-message>=Sent<enter>" "move mail to sent"
+macro index,pager Cs ";<copy-message>=Sent<enter>" "copy mail to sent"
+macro index,pager ga "<change-folder>=Archive<enter>" "go to archive"
+macro index,pager Ma ";<save-message>=Archive<enter>" "move mail to archive"
+macro index,pager Ca ";<copy-message>=Archive<enter>" "copy mail to archive"
