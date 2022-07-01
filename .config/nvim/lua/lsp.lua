@@ -19,6 +19,7 @@ local lspconfig = require("lspconfig")
 local servers = {
     "rust_analyzer",
     "sumneko_lua",
+    "clojure_lsp",
     "ocamllsp",
     "pylsp",
     "gopls",

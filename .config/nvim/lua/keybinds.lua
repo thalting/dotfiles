@@ -1,3 +1,5 @@
+vim.g.mapleader = ','
+
 local function map(mode, lhs, rhs, opts)
     local options = { noremap = true }
     if opts then
@@ -12,10 +14,10 @@ local mappings = {
     { "", "<C-s>", ":%s/" },
 
     -- telescope
-    { "n", "tf", ":lua require('telescope.builtin').find_files()<cr>" },
-    { "n", "tg", ":lua require('telescope.builtin').live_grep()<cr>" },
-    { "n", "tb", ":lua require('telescope.builtin').buffers()<cr>" },
-    { "n", "th", ":lua require('telescope.builtin').help_tags()<cr>" },
+    { "n", "<leader>tf", ":lua require('telescope.builtin').find_files()<cr>" },
+    { "n", "<leader>tg", ":lua require('telescope.builtin').live_grep()<cr>" },
+    { "n", "<leader>tb", ":lua require('telescope.builtin').buffers()<cr>" },
+    { "n", "<leader>th", ":lua require('telescope.builtin').help_tags()<cr>" },
 
     -- formatter
     { "", "<C-f>", ":Format<CR>" },

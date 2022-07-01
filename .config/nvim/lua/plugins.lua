@@ -80,18 +80,14 @@ require("formatter").setup({
             require("formatter.filetypes.lua").stylua,
         },
         zig = {
-            function()
-                return {
-                    exe = "zig",
-                    args = { "fmt" },
-                    stdin = false,
-                }
-            end,
+            require("formatter.filetypes.zig").zigfmt,
         },
-
         rust = {
             require("formatter.filetypes.rust").rustfmt,
         },
+       ocaml = {
+           require("formatter.filetypes.ocaml").ocamlformat,
+       },
         python = {
             require("formatter.filetypes.python").yapf,
         },

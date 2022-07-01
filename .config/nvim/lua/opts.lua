@@ -18,6 +18,8 @@ local opts = {
     inccommand = "split",
     clipboard = "unnamedplus",
     termguicolors = true,
+    lazyredraw = true,
+    hidden = true,
 }
 
 vim.opt.fillchars = { eob = " " }
