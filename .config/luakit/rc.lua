@@ -133,12 +133,6 @@ local binds_chrome = require("binds_chrome")
 -- Add command completion
 local completion = require("completion")
 
--- NoScript plugin, toggle scripts and or plugins on a per-domain basis.
--- `,ts` to toggle scripts, `,tp` to toggle plugins, `,tr` to reset.
--- If you use this module, don't use any site-specific `enable_scripts` or
--- `enable_plugins` settings, as these will conflict.
---require "noscript"
-
 local follow_selected = require("follow_selected")
 local go_input = require("go_input")
 local go_next_prev = require("go_next_prev")

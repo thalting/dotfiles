@@ -1,9 +1,20 @@
 local lousy = require("lousy")
+local settings = require("settings")
+local modes = require("modes")
+local select = require("select")
+local window = require("window")
+local noscript = require("noscript")
+
+noscript.enable_scripts = false
+noscript.enable_plugins = false
+settings.webview.enable_java = false
+settings.webview.enable_smooth_scrolling = false
+settings.window.home_page = "file://"
+    .. os.getenv("HOME")
+    .. "/projects/homepage/index.html"
 
 lousy.widget.tab.label_format = "{title}"
 
-local modes = require("modes")
--- Binds
 modes.remap_binds("normal", {
     { "<control-h>", "H", true },
     { "<control-l>", "L", true },
@@ -64,22 +75,31 @@ modes.add_binds("normal", {
             luakit.selection.clipboard = luakit.selection.primary
         end,
     },
+    {
+        "<Control-Return>",
+        "Open the home page.",
+        function(w)
+            w:new_tab(settings.window.home_page)
+        end,
+    },
 })
-
-local settings = require("settings")
 
 modes.add_binds("all", {
-    { "<Scroll>", "Scroll the current page.", function (w, o)
-        w:scroll { yrel = settings.window.scroll_step * o.dy }
-    end },
+    {
+        "<Scroll>",
+        "Scroll the current page.",
+        function(w, o)
+            w:scroll({ yrel = settings.window.scroll_step * o.dy })
+        end,
+    },
+    {
+        "<Mouse2>",
+        "Return to normal mode.",
+        function(w)
+            w:set_mode()
+        end,
+    },
 })
-
-settings.webview.enable_smooth_scrolling = false
-settings.window.home_page = "file://"
-    .. os.getenv("HOME")
-    .. "/projects/homepage/index.html"
-
-local select = require("select")
 
 select.label_maker = function()
     local chars = charset("ASDFGHJKL")
@@ -91,7 +111,6 @@ local engines = settings.window.search_engines
 engines.searx = "https://searx.be/?q=%s"
 engines.default = engines.searx
 
-local window = require("window")
 window.add_signal("init", function(w)
     w.update_sbar_visibility_old = w.update_sbar_visibility
     w.update_sbar_visibility = function(w)
