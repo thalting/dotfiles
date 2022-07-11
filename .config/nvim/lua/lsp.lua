@@ -27,14 +27,9 @@ local servers = {
     "zls",
 }
 
-local on_attach = function(client)
-    require("completion").on_attach(client)
-end
-
 for _, lsp in ipairs(servers) do
     if lsp == "sumneko_lua" then
         lspconfig.sumneko_lua.setup({
-            on_attach = on_attach,
             settings = {
                 Lua = {
                     runtime = {
@@ -52,7 +47,6 @@ for _, lsp in ipairs(servers) do
         })
     else
         lspconfig[lsp].setup({
-            on_attach = on_attach,
             capabilities = capabilities,
         })
     end
