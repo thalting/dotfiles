@@ -37,7 +37,17 @@ require("paq")({
 
     "mhartington/formatter.nvim",
 
+    "phaazon/hop.nvim",
+
+    "akinsho/toggleterm.nvim",
+
+    "lmburns/lf.nvim",
+
     "RRethy/nvim-base16",
+})
+
+require("hop").setup({
+    keys = "etovxqpdygfblzhckisuran",
 })
 
 require("surround").setup({
@@ -85,14 +95,43 @@ require("formatter").setup({
         rust = {
             require("formatter.filetypes.rust").rustfmt,
         },
-       ocaml = {
-           require("formatter.filetypes.ocaml").ocamlformat,
-       },
+        ocaml = {
+            require("formatter.filetypes.ocaml").ocamlformat,
+        },
         python = {
             require("formatter.filetypes.python").yapf,
         },
     },
 })
+
+require("lf").setup({
+    default_cmd = "lf",
+    default_action = "edit",
+    default_actions = {
+        ["<C-t>"] = "tabedit",
+        ["<C-x>"] = "split",
+        ["<C-v>"] = "vsplit",
+        ["<C-o>"] = "tab drop",
+    },
+    winblend = 10,
+    dir = "",
+    direction = "float",
+    border = "double",
+    height = 0.80,
+    width = 0.85,
+    escape_quit = true,
+    focus_on_open = false,
+    mappings = true,
+    tmux = false,
+    layout_mapping = "<A-u>",
+    views = {
+        { width = 0.600, height = 0.600 },
+        { width = 0.800, height = 0.800 },
+        { width = 0.950, height = 0.950 },
+    },
+})
+
+require("toggleterm").setup()
 
 require("gitsigns").setup()
 
