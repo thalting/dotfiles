@@ -26,9 +26,15 @@ local servers = {
     "ccls",
     "zls",
 }
+
+local on_attach = function(client)
+    require("completion").on_attach(client)
+end
+
 for _, lsp in ipairs(servers) do
     if lsp == "sumneko_lua" then
         lspconfig.sumneko_lua.setup({
+            on_attach = on_attach,
             settings = {
                 Lua = {
                     runtime = {
@@ -46,6 +52,7 @@ for _, lsp in ipairs(servers) do
         })
     else
         lspconfig[lsp].setup({
+            on_attach = on_attach,
             capabilities = capabilities,
         })
     end
@@ -64,8 +71,8 @@ cmp.setup({
         end,
     },
     mapping = cmp.mapping.preset.insert({
-        ["<C-d>"] = cmp.mapping.scroll_docs(-4),
-        ["<C-f>"] = cmp.mapping.scroll_docs(4),
+        ["<C-b>"] = cmp.mapping.scroll_docs(-4),
+        ["<C-n>"] = cmp.mapping.scroll_docs(4),
         ["<C-Space>"] = cmp.mapping.complete(),
         ["<CR>"] = cmp.mapping.confirm({
             behavior = cmp.ConfirmBehavior.Replace,
