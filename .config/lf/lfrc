@@ -22,7 +22,7 @@ cmd unarchive ${{
     case "$f" in
         *.tar.gz) tar -xzvf "$f" ;;
         *.tar.bz2) tar -xjvf "$f" ;;
-        *.tar) tar -xvf "$f" ;;
+        *.tar|*.tar.xz) tar -xvf "$f" ;;
         *) echo "Unsupported format" ;;
     esac
 }}
