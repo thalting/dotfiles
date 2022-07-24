@@ -3,6 +3,8 @@ require("paq")({
 
     "nvim-lua/plenary.nvim",
 
+    "Olical/conjure",
+
     "williamboman/nvim-lsp-installer",
 
     "nvim-telescope/telescope.nvim",
@@ -104,32 +106,7 @@ require("formatter").setup({
     },
 })
 
-require("lf").setup({
-    default_cmd = "lf",
-    default_action = "edit",
-    default_actions = {
-        ["<C-t>"] = "tabedit",
-        ["<C-x>"] = "split",
-        ["<C-v>"] = "vsplit",
-        ["<C-o>"] = "tab drop",
-    },
-    winblend = 10,
-    dir = "",
-    direction = "float",
-    border = "double",
-    height = 0.80,
-    width = 0.85,
-    escape_quit = true,
-    focus_on_open = false,
-    mappings = true,
-    tmux = false,
-    layout_mapping = "<A-u>",
-    views = {
-        { width = 0.600, height = 0.600 },
-        { width = 0.800, height = 0.800 },
-        { width = 0.950, height = 0.950 },
-    },
-})
+require("lf").setup()
 
 require("toggleterm").setup()
 

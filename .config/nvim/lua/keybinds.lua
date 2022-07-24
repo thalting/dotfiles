@@ -1,4 +1,5 @@
 vim.g.mapleader = ","
+vim.g.maplocalleader = ","
 
 local mappings = {
     -- my maps
@@ -18,10 +19,10 @@ local mappings = {
     { "n", "T", ":lua require('hop').hint_char1({ direction = require('hop.hint').HintDirection.BEFORE_CURSOR, current_line_only = true, hint_offset = 1 })<cr>" },
 
     -- toggleterm
-    { "n", "<C-t>", ":ToggleTerm<cr>" },
+    { "n", "<C-t>", ":ToggleTerm direction=float<cr>" },
 
     -- lf
-    { "n", "<C-n>", ":lua require('lf').start()<cr>", },
+    { "n", "<C-l>", ":lua require('lf').start()<cr>", },
 
     -- formatter
     { "", "<C-f>", ":Format<CR>" },
