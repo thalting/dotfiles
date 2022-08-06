@@ -2,7 +2,6 @@ local tym = require("tym")
 
 tym.set_config({
     font = "Cozette",
-    rewrap = true,
     isolated = true,
     padding_horizontal = 22,
     padding_vertical = 22,

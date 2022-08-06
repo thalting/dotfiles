@@ -4,7 +4,7 @@ setxkbmap br
 
 xrdb $HOME/.Xresources
 
-xwallpaper --zoom $HOME/pictures/wallpapers/Ghibli.jpg
+xwallpaper --zoom $HOME/pictures/wallpapers/glimpse.png
 
 xset s off -dpms
 

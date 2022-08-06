@@ -1,7 +1,7 @@
 local fg = "#d0d0d0"
 local bg = "#0c0c0d"
-return {
 
+return {
     color_foreground = fg,
     color_foreground_bold = fg,
     color_cursor = fg,
