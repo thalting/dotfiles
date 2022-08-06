@@ -1,5 +1,6 @@
 require("lsp")
 require("opts")
+require("barbar")
 require("plugins")
 require("keybinds")
 require("statusline")

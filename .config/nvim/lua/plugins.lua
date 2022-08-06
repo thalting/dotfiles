@@ -5,6 +5,8 @@ require("paq")({
 
     "Olical/conjure",
 
+    "hkupty/iron.nvim",
+
     "williamboman/nvim-lsp-installer",
 
     "nvim-telescope/telescope.nvim",
@@ -21,7 +23,7 @@ require("paq")({
 
     "L3MON4D3/LuaSnip",
 
-    "rafamadriz/friendly-snippets",
+    "TimUntersberger/neogit",
 
     "nvim-treesitter/nvim-treesitter",
 
@@ -34,6 +36,8 @@ require("paq")({
     "windwp/nvim-autopairs",
 
     "kyazdani42/nvim-web-devicons",
+
+    "romgrk/barbar.nvim",
 
     "nvim-lualine/lualine.nvim",
 
@@ -106,6 +110,31 @@ require("formatter").setup({
     },
 })
 
+require("iron.core").setup({
+    config = {
+        repl_open_cmd = require("iron.view").curry.bottom(20),
+    },
+    keymaps = {
+        send_motion = "<space>sc",
+        visual_send = "<space>sc",
+        send_file = "<space>sf",
+        send_line = "<space>sl",
+        send_mark = "<space>sm",
+        mark_motion = "<space>mc",
+        mark_visual = "<space>mc",
+        remove_mark = "<space>md",
+        cr = "<space>s<cr>",
+        interrupt = "<space>s<space>",
+        exit = "<space>sq",
+        clear = "<space>cl",
+    },
+})
+
+require("nvim-autopairs").setup({
+    enable_bracket_in_quote = false,
+    enable_check_bracket_line = false,
+})
+
 require("lf").setup()
 
 require("toggleterm").setup()
@@ -114,8 +143,6 @@ require("gitsigns").setup()
 
 require("telescope").setup()
 
-require("Comment").setup()
-
 require("colorizer").setup()
 
-require("nvim-autopairs").setup()
+require("Comment").setup()
