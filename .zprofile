@@ -1,8 +1,9 @@
 # PATH
-PATH=~/.local/bin:$PATH
+PATH="$HOME/.local/bin:$PATH"
 
 # others
 eval $(opam env)
+export PYTHONSTARTUP="$HOME/.pythonrc"
 
 # XDG vars
 export XDG_CONFIG_HOME="$HOME/.config"

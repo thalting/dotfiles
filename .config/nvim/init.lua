@@ -1,4 +1,5 @@
 require("lsp")
+require("git")
 require("opts")
 require("barbar")
 require("plugins")

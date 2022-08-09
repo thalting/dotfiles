@@ -25,6 +25,8 @@ require("paq")({
 
     "TimUntersberger/neogit",
 
+    "sindrets/diffview.nvim",
+
     "nvim-treesitter/nvim-treesitter",
 
     "ur4ltz/surround.nvim",
