@@ -35,6 +35,8 @@ require("paq")({
 
     "norcalli/nvim-colorizer.lua",
 
+    "gpanders/nvim-parinfer",
+
     "windwp/nvim-autopairs",
 
     "kyazdani42/nvim-web-devicons",
@@ -132,10 +134,7 @@ require("iron.core").setup({
     },
 })
 
-require("nvim-autopairs").setup({
-    enable_bracket_in_quote = false,
-    enable_check_bracket_line = false,
-})
+require("nvim-autopairs").setup()
 
 require("lf").setup()
 

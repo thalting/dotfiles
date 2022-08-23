@@ -4,7 +4,7 @@ setxkbmap br
 
 xrdb $HOME/.Xresources
 
-xwallpaper --zoom $HOME/pictures/wallpapers/glimpse.png
+xwallpaper --zoom $HOME/pictures/wallpapers/GhibliFull.png
 
 xset s off -dpms
 
@@ -17,6 +17,6 @@ sxhkd &
 picom &
 
 pgrep -x -t $(tty) notdaemon >> /dev/null || notdaemon &
-pgrep -x -t $(tty) statusbar >> /dev/null || statusbar &
+pgrep -x -t $(tty) dwmblocks >> /dev/null || dwmblocks &
 
 dwm

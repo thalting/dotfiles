@@ -10,6 +10,7 @@ source "$HOME/.local/share/miniplug.zsh"
 miniplug plugin 'hlissner/zsh-autopair'
 miniplug plugin 'kutsan/zsh-system-clipboard'
 miniplug plugin 'zdharma-continuum/fast-syntax-highlighting'
+miniplug plugin 'zsh-users/zsh-autosuggestions'
 
 miniplug load
 
@@ -19,6 +20,14 @@ PROMPT="[%~] λ "
 stty -ixon -ixoff # Disable ctrl-S/ctrl-Q for START/STOP
 setopt autocd # Automatically cd into typed directory
 setopt interactive_comments
+
+# History
+HISTSIZE=10000000
+SAVEHIST=10000000
+HISTFILE="$HOME/.cache/zhistory"
+
+# Shift + Tab
+bindkey -v '^[[Z' forward-char
 
 # Vi mode
 bindkey -v
@@ -92,7 +101,7 @@ case "$TERM" in (rxvt|rxvt-*|st|st-*|*xterm*|(dt|k|E)term)
         print -n "\e]0;${(j: :q)@}\a"
     }
     precmd() {
-      term_title "tym"
+      term_title "zsh"
     }
     preexec() {
       local CMD="${(j:\n:)${(f)1}}"

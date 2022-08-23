@@ -3,10 +3,7 @@ local settings = require("settings")
 local modes = require("modes")
 local select = require("select")
 local window = require("window")
-local noscript = require("noscript")
 
-noscript.enable_scripts = false
-noscript.enable_plugins = false
 settings.webview.enable_java = false
 settings.webview.enable_smooth_scrolling = false
 settings.window.home_page = "file://"
@@ -65,6 +62,7 @@ modes.add_binds("normal", {
             local uri = view.hovered_uri or view.uri
             if uri then
                 luakit.spawn(string.format("mpv %s", uri))
+                w:notify("Launched MPV")
             end
         end,
     },

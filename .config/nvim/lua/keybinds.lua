@@ -11,7 +11,7 @@ local mappings = {
     { "n", "<M-j>", ":wincmd j<cr>" },
     { "n", "<M-k>", ":wincmd k<cr>" },
     { "n", "<M-l>", ":wincmd l<cr>" },
-    { "n", "<M-c>", ":wincmd c<cr>" },
+    { "n", "<M-q>", ":wincmd c<cr>" },
     { "n", "<M-n>", ":wincmd n<cr>" },
     { "n", "<M-,>", ":wincmd <<cr>" },
     { "n", "<M-.>", ":wincmd ><cr>" },

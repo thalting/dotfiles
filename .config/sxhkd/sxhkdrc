@@ -49,13 +49,13 @@ super + {_,ctrl +}{_,shift +} 0
     dwmc {_,toggle}{viewex,tagex} 9
 
 XF86AudioRaiseVolume
-    pamixer -i 5
+    pamixer -i 5 && kill -44 $(pidof dwmblocks)
 
 XF86AudioLowerVolume
-    pamixer -d 5
+    pamixer -d 5 && kill -44 $(pidof dwmblocks)
 
 XF86AudioMute
-    pamixer -t
+    pamixer -t && kill -44 $(pidof dwmblocks)
 
 XF86AudioPlay
     playerctl play-pause

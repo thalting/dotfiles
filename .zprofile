@@ -2,8 +2,8 @@
 PATH="$HOME/.local/bin:$PATH"
 
 # others
+source /etc/profile.d/nix-daemon.sh
 eval $(opam env)
-export PYTHONSTARTUP="$HOME/.pythonrc"
 
 # XDG vars
 export XDG_CONFIG_HOME="$HOME/.config"
