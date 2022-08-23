@@ -1,0 +1,6 @@
+#!/bin/sh
+
+randl=$(echo 'american-english  british  british-english  catala  catalan finnish  french  german  italian  ngerman  ogerman  spanish  usa  words' | awk 'BEGIN { srand() } { split($0,a); print a[1+int(rand()*length(a))] }')
+randw=$(shuf -n1 /usr/share/dict/$randl)
+
+tmux new -s $randw
