@@ -1,59 +1,46 @@
 require("paq")({
     "savq/paq-nvim",
 
-    "nvim-lua/plenary.nvim",
+    -- org
+    "nvim-orgmode/orgmode",
+    "akinsho/org-bullets.nvim",
 
-    "Olical/conjure",
-
-    "hkupty/iron.nvim",
-
+    -- lsp and completions
     "williamboman/nvim-lsp-installer",
-
-    "nvim-telescope/telescope.nvim",
-
-    "lewis6991/gitsigns.nvim",
-
-    "neovim/nvim-lspconfig",
-
-    "hrsh7th/nvim-cmp",
-
-    "hrsh7th/cmp-nvim-lsp",
-
+    "jose-elias-alvarez/null-ls.nvim",
     "saadparwaiz1/cmp_luasnip",
-
+    "neovim/nvim-lspconfig",
+    "hrsh7th/cmp-nvim-lsp",
+    "hrsh7th/cmp-cmdline",
+    "hrsh7th/cmp-buffer",
+    "hrsh7th/nvim-cmp",
+    "hrsh7th/cmp-path",
     "L3MON4D3/LuaSnip",
 
-    "TimUntersberger/neogit",
+    -- visual
+    "nvim-treesitter/nvim-treesitter",
+    "kyazdani42/nvim-web-devicons",
+    "norcalli/nvim-colorizer.lua",
+    "nvim-lualine/lualine.nvim",
+    "RRethy/nvim-base16",
 
+    -- git
+    "lewis6991/gitsigns.nvim",
+    "TimUntersberger/neogit",
     "sindrets/diffview.nvim",
 
-    "nvim-treesitter/nvim-treesitter",
-
-    "ur4ltz/surround.nvim",
-
-    "numToStr/Comment.nvim",
-
-    "norcalli/nvim-colorizer.lua",
-
-    "gpanders/nvim-parinfer",
-
-    "windwp/nvim-autopairs",
-
-    "kyazdani42/nvim-web-devicons",
-
-    "romgrk/barbar.nvim",
-
-    "nvim-lualine/lualine.nvim",
-
-    "mhartington/formatter.nvim",
-
-    "phaazon/hop.nvim",
-
+    -- life quality
+    "nvim-telescope/telescope.nvim",
     "akinsho/toggleterm.nvim",
-
+    "numToStr/Comment.nvim",
+    "windwp/nvim-autopairs",
+    "ur4ltz/surround.nvim",
+    "phaazon/hop.nvim",
     "lmburns/lf.nvim",
 
-    "RRethy/nvim-base16",
+    -- other
+    "nvim-lua/plenary.nvim",
+    "Olical/conjure",
 })
 
 require("hop").setup({
@@ -67,6 +54,7 @@ require("surround").setup({
 require("nvim-treesitter.configs").setup({
     highlight = {
         enable = true,
+        additional_vim_regex_highlighting = { "org" },
     },
     indent = {
         enable = true,
@@ -85,65 +73,42 @@ require("nvim-web-devicons").setup({
     },
 })
 
-require("formatter").setup({
-    filetype = {
-        c = {
-            require("formatter.filetypes.c").clangformat,
-        },
-        go = {
-            require("formatter.filetypes.go").gofmt,
-        },
-        cpp = {
-            require("formatter.filetypes.cpp").clangformat,
-        },
-        lua = {
-            require("formatter.filetypes.lua").stylua,
-        },
-        zig = {
-            require("formatter.filetypes.zig").zigfmt,
-        },
-        rust = {
-            require("formatter.filetypes.rust").rustfmt,
-        },
-        ocaml = {
-            require("formatter.filetypes.ocaml").ocamlformat,
-        },
-        python = {
-            require("formatter.filetypes.python").yapf,
+require("null-ls").setup({
+    sources = {
+        -- formatters
+        require("null-ls").builtins.formatting.yapf,
+        require("null-ls").builtins.formatting.joker,
+
+        -- diagnostics
+        require("null-ls").builtins.diagnostics.mypy,
+    },
+})
+
+require("org-bullets").setup({
+    concealcursor = false,
+    symbols = {
+        headlines = { "◉", "○", "✸", "✿" },
+        checkboxes = {
+            half = { "", "OrgTSCheckboxHalfChecked" },
+            done = { "✓", "OrgDone" },
+            todo = { "˟", "OrgTODO" },
         },
     },
 })
 
-require("iron.core").setup({
-    config = {
-        repl_open_cmd = require("iron.view").curry.bottom(20),
-    },
-    keymaps = {
-        send_motion = "<space>sc",
-        visual_send = "<space>sc",
-        send_file = "<space>sf",
-        send_line = "<space>sl",
-        send_mark = "<space>sm",
-        mark_motion = "<space>mc",
-        mark_visual = "<space>mc",
-        remove_mark = "<space>md",
-        cr = "<space>s<cr>",
-        interrupt = "<space>s<space>",
-        exit = "<space>sq",
-        clear = "<space>cl",
-    },
+require("nvim-autopairs").setup({
+    disale_in_macro = true,
+    enable_check_bracket_line = false,
 })
-
-require("nvim-autopairs").setup()
-
-require("lf").setup()
 
 require("toggleterm").setup()
-
-require("gitsigns").setup()
 
 require("telescope").setup()
 
 require("colorizer").setup()
 
 require("Comment").setup()
+
+require("orgmode").setup_ts_grammar()
+
+require("orgmode").setup()

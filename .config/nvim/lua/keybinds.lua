@@ -32,29 +32,6 @@ local mappings = {
     { "n", "<leader>tb", ":lua require('telescope.builtin').buffers()<cr>" },
     { "n", "<leader>th", ":lua require('telescope.builtin').help_tags()<cr>" },
 
-    -- barbar
-    { 'n', '<A-,>', '<Cmd>BufferPrevious<CR>' },
-    { 'n', '<A-.>', '<Cmd>BufferNext<CR>' },
-    { 'n', '<A-<>', '<Cmd>BufferMovePrevious<CR>' },
-    { 'n', '<A->>', '<Cmd>BufferMoveNext<CR>',  },
-    { 'n', '<A-1>', '<Cmd>BufferGoto 1<CR>' },
-    { 'n', '<A-2>', '<Cmd>BufferGoto 2<CR>' },
-    { 'n', '<A-3>', '<Cmd>BufferGoto 3<CR>' },
-    { 'n', '<A-4>', '<Cmd>BufferGoto 4<CR>' },
-    { 'n', '<A-5>', '<Cmd>BufferGoto 5<CR>' },
-    { 'n', '<A-6>', '<Cmd>BufferGoto 6<CR>' },
-    { 'n', '<A-7>', '<Cmd>BufferGoto 7<CR>' },
-    { 'n', '<A-8>', '<Cmd>BufferGoto 8<CR>' },
-    { 'n', '<A-9>', '<Cmd>BufferGoto 9<CR>' },
-    { 'n', '<A-0>', '<Cmd>BufferLast<CR>'  },
-    { 'n', '<A-p>', '<Cmd>BufferPin<CR>' },
-    { 'n', '<A-c>', '<Cmd>BufferClose<CR>'  },
-    { 'n', '<C-p>', '<Cmd>BufferPick<CR>' },
-    { 'n', '<Space>bb', '<Cmd>BufferOrderByBufferNumber<CR>' },
-    { 'n', '<Space>bd', '<Cmd>BufferOrderByDirectory<CR>' },
-    { 'n', '<Space>bl', '<Cmd>BufferOrderByLanguage<CR>' },
-    { 'n', '<Space>bw', '<Cmd>BufferOrderByWindowNumber<CR>' },
-
     -- hop
     { "n", "f", ":lua require('hop').hint_char1({ direction = require('hop.hint').HintDirection.AFTER_CURSOR, current_line_only = true })<cr>" },
     { "n", "F", ":lua require('hop').hint_char1({ direction = require('hop.hint').HintDirection.BEFORE_CURSOR, current_line_only = true })<cr>" },
@@ -69,12 +46,12 @@ local mappings = {
     { "n", "<C-l>", ":lua require('lf').start()<cr>", },
 
     -- formatter
-    { "n", "<leader>f", ":Format<CR>" },
+    { "n", "<leader>f", ":lua vim.lsp.buf.formatting()<CR>" },
 
     -- lsp
     { "n", "gD", ":lua vim.lsp.buf.declaration()<cr>" },
     { "n", "gd", ":lua vim.lsp.buf.definition()<cr>" },
-    { "n", "K", ":lua vim.lsp.buf.hover()<cr>" },
+    { "n", "<space>h", ":lua vim.lsp.buf.hover()<cr>" },
     { "n", "gi", ":lua vim.lsp.buf.implementation()<cr>" },
     { "n", "<C-k>", ":lua vim.lsp.buf.signature_help()<cr>" },
     { "n", "<space>wa", ":lua vim.lsp.buf.add_workspace_folder()<cr>" },

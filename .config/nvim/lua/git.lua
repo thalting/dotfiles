@@ -1,3 +1,5 @@
+require("gitsigns").setup()
+
 require("neogit").setup({
     disable_signs = false,
     disable_hint = false,
