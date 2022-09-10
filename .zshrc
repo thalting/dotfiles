@@ -97,15 +97,14 @@ lfcd() {
 # Dynamic window title with zsh shell.
 # Shows current directory and running (multi-line) command.
 case "$TERM" in (rxvt|rxvt-*|st|st-*|*xterm*|(dt|k|E)term)
-    local term_title() {
-        print -n "\e]0;${(j: :q)@}\a"
-    }
+    local term_title() { print -n "\e]0;${(j: :q)@}\a" }
     precmd() {
-      term_title "zsh"
+        local DIR="$(pwd | sed -e "s;^$HOME;~;")"
+        term_title "$USER@$HOST:$DIR"
     }
     preexec() {
-      local CMD="${(j:\n:)${(f)1}}"
-      term_title "$CMD"
+        local CMD="${(j:\n:)${(f)1}}"
+        term_title "$USER@$HOST:$CMD"
     }
     ;;
 esac

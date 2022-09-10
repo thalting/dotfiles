@@ -30,4 +30,5 @@ alias                                                       \
       poweroff='doas poweroff'                              \
       shutdown='doas shutdown'                              \
       xrdb-update='xrdb $HOME/.Xresources'                  \
+      activate='source .venv/bin/activate'                  \
       update-grub='doas grub-mkconfig -o /boot/grub/grub.cfg'
