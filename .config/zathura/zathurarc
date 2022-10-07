@@ -31,3 +31,6 @@ set recolor-lightcolor          "#0c0c0d"
 set recolor-darkcolor           "#e8e8e8"
 
 set guioptions ""
+
+map [normal]     f toggle_fullscreen
+map [fullscreen] f toggle_fullscreen
