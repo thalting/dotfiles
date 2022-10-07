@@ -5,3 +5,5 @@
 .config/vimb/*
 !.config/vimb/config
 !.config/vimb/style.css
+
+.config/nvim/plugin
