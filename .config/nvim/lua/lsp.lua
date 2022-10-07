@@ -1,14 +1,3 @@
--- nvim lsp installer
-require("nvim-lsp-installer").setup({
-    ui = {
-        icons = {
-            server_installed = "✓",
-            server_pending = "➜",
-            server_uninstalled = "✗",
-        },
-    },
-})
-
 -- Add additional capabilities supported by nvim-cmp
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require("cmp_nvim_lsp").update_capabilities(capabilities)
@@ -123,7 +112,3 @@ cmp.setup.cmdline('/', {
         { name = 'buffer' }
     }
 })
-
--- insert `(` after select function or method item
-local cmp_autopairs = require("nvim-autopairs.completion.cmp")
-cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())

@@ -39,14 +39,15 @@ local mappings = {
     { "n", "T", ":lua require('hop').hint_char1({ direction = require('hop.hint').HintDirection.BEFORE_CURSOR, current_line_only = true, hint_offset = 1 })<cr>" },
 
     -- toggleterm
-    { "n", "<C-t>", ":ToggleTerm<cr>" },
+    { "t", "<C-z>", "<C-\\><C-N>" },
+    { "n", "<C-t>", ":ToggleTerm size=20 direction=horizontal<cr>" },
+    { "t", "<C-t>", "<C-\\><C-N> :ToggleTerm size=20 direction=horizontal<cr>" }, -- fix toggle in zsh vi mode
+
     { "n", "<S-t>", ":ToggleTerm direction=float<cr>" },
+    { "t", "<S-t>", "<C-\\><C-N> :ToggleTerm direction=float<cr>" }, -- fix toggle in zsh vi mode
 
     -- lf
     { "n", "<C-l>", ":lua require('lf').start()<cr>", },
-
-    -- formatter
-    { "n", "<leader>f", ":lua vim.lsp.buf.formatting()<CR>" },
 
     -- lsp
     { "n", "gD", ":lua vim.lsp.buf.declaration()<cr>" },
@@ -61,7 +62,10 @@ local mappings = {
     { "n", "<space>rn", ":lua vim.lsp.buf.rename()<cr>" },
     { "n", "<space>ca", ":lua vim.lsp.buf.code_action()<cr>" },
     { "n", "gr", ":lua vim.lsp.buf.references()<cr>" },
-    { "n", "<space>f", ":lua vim.lsp.buf.formatting()<cr>" },
+    { "n", "<space>f", ":lua vim.lsp.buf.format()<cr>" },
+
+    -- neogit
+    { "n", "<space>g", ":Neogit<cr>" },
 
     -- buffers
     { "n", "<leader>bd", ":bdelete<cr>"},

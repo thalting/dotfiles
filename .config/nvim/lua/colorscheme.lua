@@ -16,11 +16,3 @@ require("base16-colorscheme").setup({
     base0E = "#ba8baf",
     base0F = "#a16946",
 })
-
-return {
-    normal = {
-        a = { bg = "#0c0c0d", fg = "#f8f8f8" },
-        b = { bg = "#0c0c0d", fg = "#f8f8f8" },
-        c = { bg = "#0c0c0d", fg = "#f8f8f8" },
-    },
-}

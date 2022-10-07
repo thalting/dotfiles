@@ -11,7 +11,6 @@ local opts = {
     -- misc
     list = true,
     wrap = false,
-    mouse = "a",
     confirm = true,
     swapfile = false,
     shortmess = "I",
