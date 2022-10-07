@@ -14,6 +14,19 @@ dwm.sidepad: 10
 dwm.user_bh: 8
 
 ! ----------------------------------------------------------
+! dmenu
+! ----------------------------------------------------------
+dmenu.font: Cozette
+dmenu.normbgcolor: #0c0c0d
+dmenu.normfgcolor: #d8d8d8
+dmenu.selbgcolor: #d8d8d8
+dmenu.selfgcolor: #0c0c0d
+dmenu.border_width: 2
+dmenu.centered: 1
+dmenu.columns: 1
+dmenu.lines: 10
+
+! ----------------------------------------------------------
 ! nsxiv
 ! ----------------------------------------------------------
 Nsxiv.bar.font: Cozette
