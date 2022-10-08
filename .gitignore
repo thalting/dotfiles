@@ -7,3 +7,6 @@
 !.config/vimb/style.css
 
 .config/nvim/plugin
+
+.config/mutt/riseupdir
+.config/mutt/airmaildir
