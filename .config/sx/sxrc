@@ -1,6 +1,7 @@
 #!/bin/sh
 
 setxkbmap br
+setxkbmap -option caps:ctrl_modifier
 
 xrdb $HOME/.Xresources
 
