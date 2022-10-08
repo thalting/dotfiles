@@ -38,3 +38,6 @@ local gknapsettings = {
     mdtohtmlviewerrefresh = "none",
 }
 vim.g.knap_settings = gknapsettings
+
+vim.g["conjure#filetype#scheme"] = "conjure.client.guile.socket"
+vim.g["conjure#client#guile#socket#pipename"] = ".guile-repl.socket"
