@@ -1,3 +1,5 @@
+require("impatient")
+
 vim.cmd [[packadd packer.nvim]]
 
 local ensure_packer = function()
@@ -18,19 +20,23 @@ return require("packer").startup(function(use)
 
     -- org
     use {
-        "nvim-orgmode/orgmode", config = function()
+        { "nvim-orgmode/orgmode", config = function()
             require("orgmode").setup()
             require("orgmode").setup_ts_grammar()
-        end
-    }
-    use {
-        "akinsho/org-bullets.nvim", config = function()
+        end },
+        { "akinsho/org-bullets.nvim", config = function()
             require("org-bullets").setup()
-        end
+        end },
+
     }
+
+    -- auto-previewer
+    use "frabjous/knap"
 
     -- lsp and completions
     use {
+        "neovim/nvim-lspconfig",
+
         { "williamboman/nvim-lsp-installer", config = function()
             require("nvim-lsp-installer").setup({
                 ui = {
@@ -42,6 +48,7 @@ return require("packer").startup(function(use)
                 },
             })
         end },
+
         { "jose-elias-alvarez/null-ls.nvim", config = function()
             require("null-ls").setup({
                 sources = {
@@ -63,8 +70,7 @@ return require("packer").startup(function(use)
             }
         },
 
-        "neovim/nvim-lspconfig",
-
+        -- snippets
         { "L3MON4D3/LuaSnip", config = function()
             require("luasnip.loaders.from_vscode").lazy_load()
         end },
@@ -89,8 +95,8 @@ return require("packer").startup(function(use)
         { "norcalli/nvim-colorizer.lua", config = function()
             require("colorizer").setup()
         end },
-        { "nvim-lualine/lualine.nvim", config = require [[statusline]] },
-        "RRethy/nvim-base16",
+        { "nvim-lualine/lualine.nvim", config = require("statusline") },
+        { "RRethy/nvim-base16", config = require("colorscheme") }
     }
 
     -- git
@@ -137,6 +143,7 @@ return require("packer").startup(function(use)
     use {
         "nvim-lua/plenary.nvim",
         "Olical/conjure",
+        "lewis6991/impatient.nvim",
     }
 
     -- bootstrap

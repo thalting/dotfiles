@@ -26,6 +26,27 @@ local mappings = {
     { "n", "<M-T>", ":wincmd T<cr>" },
     { "n", "<M-v>", ":vnew<cr>" },
 
+    -- knap
+    -- F5 processes the document once, and refreshes the view
+    { "i", "<F5>", ":lua require('knap').process_once()<cr>" },
+    { "v", "<F5>", ":lua require('knap').process_once()<cr>" },
+    { "n", "<F5>", ":lua require('knap').process_once()<cr>" },
+
+     -- closes the viewer application,'and 'llows settings to be reset
+    { "i", "<F6>", ":lua require('knap').close_viewer()<cr>" },
+    { "v", "<F6>", ":lua require('knap').close_viewer()<cr>" },
+    { "n", "<F6>", ":lua require('knap').close_viewer()<cr>" },
+
+     -- toggles the auto-processing on'and 'ff
+    { "i", "<F7>", ":lua require('knap').toggle_autopreviewing()<cr>" },
+    { "v", "<F7>", ":lua require('knap').toggle_autopreviewing()<cr>" },
+    { "n", "<F7>", ":lua require('knap').toggle_autopreviewing()<cr>" },
+
+     -- invokes a SyncTeX forward sear'h, o' similar, where appropriate
+    { "i", "<F8>", ":lua require('knap').forward_jump()<cr>" },
+    { "v", "<F8>", ":lua require('knap').forward_jump()<cr>" },
+    { "n", "<F8>", ":lua require('knap').forward_jump()<cr>" },
+
     -- telescope
     { "n", "<leader>tf", ":lua require('telescope.builtin').find_files()<cr>" },
     { "n", "<leader>tg", ":lua require('telescope.builtin').live_grep()<cr>" },
