@@ -1,0 +1,57 @@
+#!/bin/sh
+
+VIDEO_DIR="$HOME/videos/"
+RESOLUTION="1600x900"
+
+die () {
+	[ -n "$@" ] && echo "$@" >&2
+	exit 1
+}
+
+video() {
+	for arg in "$@"; do
+		case "$arg" in
+			tmp) tmp="true" ;;
+			full|sel) mode="$arg" ;;
+			*) die "invalid option \"$arg\"" ;;
+		esac
+	done
+
+	[ "$tmp" = "true" ] \
+		&& filename="${XDG_RUNTIME_DIR:-/tmp}/$(date "+%-Y-%m-%d-%H%M%S")_rec.mkv" \
+		|| filename="${VIDEO_DIR}/$(date "+%-Y-%m-%d-%H%M%S")_rec.mkv"
+
+	case "$mode" in
+		full) 
+				# -f oss -i null \
+			ffmpeg -v -8 -f x11grab -s "$RESOLUTION" -i ${DISPLAY} \
+				   -c:v libx264rgb -crf 0 -preset ultrafast -qp 0 "$filename"
+			;;
+		sel)
+			sel="$(slop -f '%x,%y %wx%h')" || die
+			ffmpeg -v -8 -f x11grab -s "${sel##* }" \
+				   -i ${DISPLAY}+${sel%% *}\
+				   -c:v libx264rgb -crf 0 -preset ultrafast -qp 0 "$filename"
+			;;
+		*) die "invalid option" ;;
+	esac
+
+	printf "$filename"
+}
+
+encode() {
+	file="$1"
+	output="${file%%.*}.mp4"
+	
+	ffmpeg -i "$file" \
+		   -f lavfi -i anullsrc=channel_layout=stereo:sample_rate=44100 \
+           -shortest \
+		   -profile:v main -pix_fmt yuv420p \
+	       -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2"  "$output" \
+		   && rm "$file"
+	
+	printf "$output" | xclip -selection clipboard 
+}
+
+echo "press q to stop"
+encode "$(video $@)"
