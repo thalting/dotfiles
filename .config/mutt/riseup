@@ -1,0 +1,16 @@
+# Account
+set from      = halting@riseup.net
+
+# Send
+set smtp_url  = smtps://$imap_user@mail.riseup.net/
+set smtp_pass = $imap_pass
+
+# Receive
+set imap_user = halting@riseup.net
+set imap_pass = "`pass email/riseup`"
+set folder = imaps://halting@mail.riseup.net/
+set imap_check_subscribed
+set spoolfile = "+INBOX"
+set header_cache = ~/.config/mutt/riseupdir
+set message_cachedir = ~/.config/mutt/riseupdir
+set certificate_file = ~/.config/mutt/riseupdir

@@ -1,0 +1,16 @@
+# Account
+set from      = laplaced@airmail.cc
+
+# Send
+set smtp_url  = smtps://$imap_user@mail.cock.li/
+set smtp_pass = $imap_pass
+
+# Receive
+set imap_user = laplaced@airmail.cc
+set imap_pass = "`pass email/cockli`"
+set folder = imaps://laplaced@airmail.cc@mail.cock.li:993
+set imap_check_subscribed
+set spoolfile = "+INBOX"
+set header_cache = ~/.config/mutt/airmaildir
+set message_cachedir = ~/.config/mutt/airmaildir
+set certificate_file = ~/.config/mutt/airmaildir
