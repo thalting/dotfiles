@@ -5,7 +5,6 @@ alias                                                       \
       gdb='gdb -q'                                          \
       wttr='curl "wttr.in/?Q"'                              \
       vi='nvim'                                             \
-      du='du -h'                                            \
       cl='clear'                                            \
       cp='cp -iv'                                           \
       l='ls --group-directories-first --color=auto'         \
@@ -32,3 +31,5 @@ alias                                                       \
       xrdb-update='xrdb $HOME/.Xresources'                  \
       activate='source .venv/bin/activate'                  \
       update-grub='doas grub-mkconfig -o /boot/grub/grub.cfg'
+
+alias sytdl='yt-dlp --external-downloader=aria2c --external-downloader-args "--min-split-size=1M --max-connection-per-server=16 --max-concurrent-downloads=16 --split=16"'
