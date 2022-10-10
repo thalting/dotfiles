@@ -1,153 +1,120 @@
 require("impatient")
 
-vim.cmd [[packadd packer.nvim]]
-
-local ensure_packer = function()
-    local fn = vim.fn
-    local install_path = fn.stdpath("data") .. "/site/pack/packer/start/packer.nvim"
-    if fn.empty(fn.glob(install_path)) > 0 then
-        fn.system({ "git", "clone", "--depth", "1", "https://github.com/wbthomason/packer.nvim", install_path })
-        vim.cmd [[packadd packer.nvim]]
-        return true
-    end
-    return false
-end
-
-local packer_bootstrap = ensure_packer()
-
-return require("packer").startup(function(use)
-    use "wbthomason/packer.nvim"
+require "paq" {
+    "savq/paq-nvim",
 
     -- org
-    use {
-        { "nvim-orgmode/orgmode", config = function()
-            require("orgmode").setup()
-            require("orgmode").setup_ts_grammar()
-        end },
-        { "akinsho/org-bullets.nvim", config = function()
-            require("org-bullets").setup()
-        end },
-
-    }
-
-    -- auto-previewer
-    use "frabjous/knap"
+    "nvim-orgmode/orgmode",
+    "akinsho/org-bullets.nvim",
 
     -- lsp and completions
-    use {
-        "neovim/nvim-lspconfig",
-
-        { "williamboman/nvim-lsp-installer", config = function()
-            require("nvim-lsp-installer").setup({
-                ui = {
-                    icons = {
-                        server_installed = "✓",
-                        server_pending = "➜",
-                        server_uninstalled = "✗",
-                    },
-                },
-            })
-        end },
-
-        { "jose-elias-alvarez/null-ls.nvim", config = function()
-            require("null-ls").setup({
-                sources = {
-                    -- formatters
-                    require("null-ls").builtins.formatting.yapf,
-                    require("null-ls").builtins.formatting.joker,
-                },
-            })
-        end },
-
-        -- cmp
-        { "hrsh7th/nvim-cmp",
-            requires = {
-                "saadparwaiz1/cmp_luasnip",
-                "hrsh7th/cmp-nvim-lsp",
-                "hrsh7th/cmp-cmdline",
-                "hrsh7th/cmp-buffer",
-                "hrsh7th/cmp-path",
-            }
-        },
-
-        -- snippets
-        { "L3MON4D3/LuaSnip", config = function()
-            require("luasnip.loaders.from_vscode").lazy_load()
-        end },
-        "rafamadriz/friendly-snippets",
-    }
+    "williamboman/mason-lspconfig.nvim",
+    "jose-elias-alvarez/null-ls.nvim",
+    "saadparwaiz1/cmp_luasnip",
+    "williamboman/mason.nvim",
+    "neovim/nvim-lspconfig",
+    "hrsh7th/cmp-nvim-lsp",
+    "lewis6991/hover.nvim",
+    "hrsh7th/cmp-cmdline",
+    "dcampos/nvim-snippy",
+    "dcampos/cmp-snippy",
+    "hrsh7th/cmp-buffer",
+    "hrsh7th/nvim-cmp",
+    "hrsh7th/cmp-path",
 
     -- visual
-    use {
-        { "nvim-treesitter/nvim-treesitter", run = ":TSUpdate", config = function()
-            require("nvim-treesitter.configs").setup({
-                highlight = {
-                    enable = true,
-                    additional_vim_regex_highlighting = { "org" },
-                },
-                indent = {
-                    enable = true,
-                    disable = { "python" },
-                },
-            })
-        end },
-        "kyazdani42/nvim-web-devicons",
-        { "norcalli/nvim-colorizer.lua", config = function()
-            require("colorizer").setup()
-        end },
-        { "nvim-lualine/lualine.nvim", config = require("statusline") },
-        { "RRethy/nvim-base16", config = require("colorscheme") }
-    }
+    { "nvim-treesitter/nvim-treesitter", run = function()
+        vim.cmd("TSUpdate")
+    end },
+    "kyazdani42/nvim-web-devicons",
+    'NvChad/nvim-colorizer.lua',
+    "nvim-lualine/lualine.nvim",
+    "RRethy/nvim-base16",
 
     -- git
-    use {
-        { "lewis6991/gitsigns.nvim", config = function()
-            require("gitsigns").setup()
-        end },
-        { "TimUntersberger/neogit", config = function()
-            require("neogit").setup()
-        end },
-    }
+    "lewis6991/gitsigns.nvim",
+    "TimUntersberger/neogit",
 
     -- life quality
-    use {
-        "nvim-telescope/telescope.nvim",
-        { "akinsho/toggleterm.nvim", config = function()
-            require("toggleterm").setup()
-        end },
-        { "numToStr/Comment.nvim", config = function()
-            require("Comment").setup()
-        end },
-
-        { "windwp/nvim-autopairs", config = function()
-            require("nvim-autopairs").setup({
-                disale_in_macro = true,
-                enable_check_bracket_line = false,
-            })
-        end },
-
-        { "ur4ltz/surround.nvim", config = function()
-            require("surround").setup({
-                mappings_style = "surround",
-            })
-        end },
-        { "phaazon/hop.nvim", config = function()
-            require("hop").setup({
-                keys = "etovxqpdygfblzhckisuran",
-            })
-        end },
-        "lmburns/lf.nvim",
-    }
+    "nvim-telescope/telescope.nvim",
+    "akinsho/toggleterm.nvim",
+    "kylechui/nvim-surround",
+    "numToStr/Comment.nvim",
+    "windwp/nvim-autopairs",
+    "phaazon/hop.nvim",
+    "lmburns/lf.nvim",
 
     -- other
-    use {
-        "nvim-lua/plenary.nvim",
-        "Olical/conjure",
-        "lewis6991/impatient.nvim",
-    }
+    "lewis6991/impatient.nvim",
+    "nvim-lua/plenary.nvim",
+    "Olical/conjure",
+    "frabjous/knap",
+}
 
-    -- bootstrap
-    if packer_bootstrap then
-        require("packer").sync()
-    end
-end)
+require("orgmode").setup()
+require("orgmode").setup_ts_grammar()
+require("org-bullets").setup()
+require("gitsigns").setup({
+    current_line_blame_opts = {
+        delay = 10,
+    },
+})
+require("neogit").setup()
+require("toggleterm").setup()
+require("Comment").setup()
+require("nvim-surround").setup()
+
+require("colorizer").setup({
+    user_default_options = {
+        names = false,
+    },
+})
+
+require("hop").setup({
+    keys = "asdfghjkl",
+})
+
+require("hover").setup {
+    init = function()
+        require("hover.providers.lsp")
+    end,
+    preview_opts = {
+        border = nil
+    },
+    preview_window = false,
+    title = false
+}
+
+require("nvim-autopairs").setup({
+    disale_in_macro = true,
+    enable_check_bracket_line = false,
+})
+
+require("null-ls").setup({
+    sources = {
+        -- formatters
+        require("null-ls").builtins.formatting.yapf,
+
+        -- code actions
+        require("null-ls").builtins.code_actions.gitsigns,
+
+        -- diagnostics
+        require("null-ls").builtins.diagnostics.zsh,
+        require("null-ls").builtins.diagnostics.mypy,
+        require("null-ls").builtins.diagnostics.shellcheck,
+
+        -- hover
+        require("null-ls").builtins.hover.dictionary,
+    },
+})
+
+require("nvim-treesitter.configs").setup({
+    highlight = {
+        enable = true,
+        additional_vim_regex_highlighting = { "org" },
+    },
+    indent = {
+        enable = true,
+        disable = { "python" },
+    },
+})

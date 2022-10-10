@@ -19,6 +19,35 @@ local servers = {
     "zls",
 }
 
+require("mason").setup({
+    ui = {
+        icons = {
+            package_installed = "✓",
+            package_pending = "➜",
+            package_uninstalled = "✗"
+        }
+    }
+})
+
+require("mason-lspconfig").setup({
+    ensure_installed = {
+        -- lsps
+        "rust_analyzer",
+        "sumneko_lua",
+        "clojure_lsp",
+        "elixirls",
+        "ocamllsp",
+        "tsserver",
+        "pyright",
+        "gopls",
+        "zls",
+
+        -- others
+        "mypy",
+        "yapf",
+    }
+})
+
 for _, lsp in ipairs(servers) do
     if lsp == "sumneko_lua" then
         lspconfig.sumneko_lua.setup({
@@ -44,22 +73,31 @@ for _, lsp in ipairs(servers) do
     end
 end
 
--- luasnip setup
-local luasnip = require("luasnip")
-require("luasnip.loaders.from_vscode").lazy_load()
-
 local has_words_before = function()
     local line, col = unpack(vim.api.nvim_win_get_cursor(0))
     return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
 end
 
+local snippy = require("snippy")
+
 -- nvim-cmp setup
 local cmp = require("cmp")
 cmp.setup({
+    enabled = function()
+        -- disable completion in comments
+        local context = require 'cmp.config.context'
+        -- keep command mode completion enabled when cursor is in a comment
+        if vim.api.nvim_get_mode().mode == 'c' then
+            return true
+        else
+            return not context.in_treesitter_capture("comment")
+                and not context.in_syntax_group("Comment")
+        end
+    end,
     snippet = {
         expand = function(args)
-            luasnip.lsp_expand(args.body)
-        end,
+            snippy.expand_snippet(args.body)
+        end
     },
     mapping = cmp.mapping.preset.insert({
         ["<C-d>"] = cmp.mapping.scroll_docs(-4),
@@ -72,19 +110,20 @@ cmp.setup({
         ["<Tab>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
                 cmp.select_next_item()
-            elseif luasnip.expand_or_jumpable() then
-                luasnip.expand_or_jump()
+            elseif snippy.can_expand_or_advance() then
+                snippy.expand_or_advance()
             elseif has_words_before() then
                 cmp.complete()
             else
                 fallback()
             end
         end, { "i", "s" }),
+
         ["<S-Tab>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
                 cmp.select_prev_item()
-            elseif luasnip.jumpable(-1) then
-                luasnip.jump(-1)
+            elseif snippy.can_jump(-1) then
+                snippy.previous()
             else
                 fallback()
             end
@@ -93,7 +132,7 @@ cmp.setup({
     sources = {
         { name = "nvim_lsp" },
         { name = "orgmode" },
-        { name = "luasnip" },
+        { name = "snippy " },
         { name = "buffer" },
         { name = "path" },
     },
@@ -112,17 +151,3 @@ cmp.setup.cmdline('/', {
         { name = 'buffer' }
     }
 })
-
-function LeaveSnippet()
-    if ((vim.v.event.old_mode == 's' and vim.v.event.new_mode == 'n') or vim.v.event.old_mode == 'i')
-        and require('luasnip').session.current_nodes[vim.api.nvim_get_current_buf()]
-        and not require('luasnip').session.jump_active
-    then
-        require('luasnip').unlink_current()
-    end
-end
-
--- stop snippets when you leave to normal mode
-vim.api.nvim_command([[
-   autocmd ModeChanged * lua LeaveSnippet()
-]])
