@@ -5,6 +5,7 @@ PATH="$HOME/.local/bin:$PATH"
 source /etc/profile.d/nix-daemon.sh
 source $HOME/.nix-profile/etc/profile.d/hm-session-vars.sh
 export NIX_PATH=$HOME/.nix-defexpr/channels:/nix/var/nix/profiles/per-user/root/channels${NIX_PATH:+:$NIX_PATH}
+export GOPATH="$HOME/.go"
 
 # XDG vars
 export XDG_CONFIG_HOME="$HOME/.config"
