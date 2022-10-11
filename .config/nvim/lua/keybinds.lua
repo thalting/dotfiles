@@ -32,17 +32,17 @@ local mappings = {
     { "v", "<F5>", ":lua require('knap').process_once()<cr>" },
     { "n", "<F5>", ":lua require('knap').process_once()<cr>" },
 
-     -- closes the viewer application,'and 'llows settings to be reset
+    -- closes the viewer application,'and 'llows settings to be reset
     { "i", "<F6>", ":lua require('knap').close_viewer()<cr>" },
     { "v", "<F6>", ":lua require('knap').close_viewer()<cr>" },
     { "n", "<F6>", ":lua require('knap').close_viewer()<cr>" },
 
-     -- toggles the auto-processing on'and 'ff
+    -- toggles the auto-processing on'and 'ff
     { "i", "<F7>", ":lua require('knap').toggle_autopreviewing()<cr>" },
     { "v", "<F7>", ":lua require('knap').toggle_autopreviewing()<cr>" },
     { "n", "<F7>", ":lua require('knap').toggle_autopreviewing()<cr>" },
 
-     -- invokes a SyncTeX forward sear'h, o' similar, where appropriate
+    -- invokes a SyncTeX forward sear'h, o' similar, where appropriate
     { "i", "<F8>", ":lua require('knap').forward_jump()<cr>" },
     { "v", "<F8>", ":lua require('knap').forward_jump()<cr>" },
     { "n", "<F8>", ":lua require('knap').forward_jump()<cr>" },

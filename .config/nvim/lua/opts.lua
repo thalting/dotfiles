@@ -26,6 +26,7 @@ for k, v in pairs(opts) do
     vim.o[k] = v
 end
 
+-- knap
 local gknapsettings = {
     textopdfviewerlaunch = [[zathura --synctex-editor-command
                             'nvim --headless -es --cmd \
@@ -36,8 +37,13 @@ local gknapsettings = {
 
     mdtohtmlviewerlaunch = "luakit %outputfile%",
     mdtohtmlviewerrefresh = "none",
+
+    orgoutputext = "pdf",
+    orgtopdf = "pandoc %docroot% -o %outputfile%",
+    orgtopdfviewerlaunch = "zathura %outputfile%",
 }
 vim.g.knap_settings = gknapsettings
 
+-- conjure
 vim.g["conjure#filetype#scheme"] = "conjure.client.guile.socket"
 vim.g["conjure#client#guile#socket#pipename"] = ".guile-repl.socket"

@@ -24,9 +24,9 @@ require("mason").setup({
         icons = {
             package_installed = "✓",
             package_pending = "➜",
-            package_uninstalled = "✗"
-        }
-    }
+            package_uninstalled = "✗",
+        },
+    },
 })
 
 require("mason-lspconfig").setup({
@@ -42,10 +42,33 @@ require("mason-lspconfig").setup({
         "gopls",
         "zls",
 
+        -- formatters
+        "stylua",
+        "yapf",
+
         -- others
         "mypy",
-        "yapf",
-    }
+    },
+})
+
+require("null-ls").setup({
+    sources = {
+        -- formatters
+        require("null-ls").builtins.formatting.yapf,
+        require("null-ls").builtins.formatting.stylua,
+
+        -- code actions
+        require("null-ls").builtins.code_actions.gitsigns,
+        require("null-ls").builtins.code_actions.shellcheck,
+
+        -- diagnostics
+        require("null-ls").builtins.diagnostics.zsh,
+        require("null-ls").builtins.diagnostics.mypy,
+        require("null-ls").builtins.diagnostics.shellcheck,
+
+        -- hover
+        require("null-ls").builtins.hover.dictionary,
+    },
 })
 
 for _, lsp in ipairs(servers) do
@@ -80,24 +103,27 @@ end
 
 local snippy = require("snippy")
 
+local t = function(str)
+    return vim.api.nvim_replace_termcodes(str, true, true, true)
+end
+
 -- nvim-cmp setup
 local cmp = require("cmp")
 cmp.setup({
     enabled = function()
         -- disable completion in comments
-        local context = require 'cmp.config.context'
+        local context = require("cmp.config.context")
         -- keep command mode completion enabled when cursor is in a comment
-        if vim.api.nvim_get_mode().mode == 'c' then
+        if vim.api.nvim_get_mode().mode == "c" then
             return true
         else
-            return not context.in_treesitter_capture("comment")
-                and not context.in_syntax_group("Comment")
+            return not context.in_treesitter_capture("comment") and not context.in_syntax_group("Comment")
         end
     end,
     snippet = {
         expand = function(args)
             snippy.expand_snippet(args.body)
-        end
+        end,
     },
     mapping = cmp.mapping.preset.insert({
         ["<C-d>"] = cmp.mapping.scroll_docs(-4),
@@ -132,6 +158,7 @@ cmp.setup({
     sources = {
         { name = "nvim_lsp" },
         { name = "orgmode" },
+        { name = "conjure" },
         { name = "snippy " },
         { name = "buffer" },
         { name = "path" },
@@ -145,9 +172,9 @@ cmp.setup.cmdline(":", {
     },
 })
 
-cmp.setup.cmdline('/', {
+cmp.setup.cmdline("/", {
     mapping = cmp.mapping.preset.cmdline(),
     sources = {
-        { name = 'buffer' }
-    }
+        { name = "buffer" },
+    },
 })
