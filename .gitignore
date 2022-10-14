@@ -1,5 +1,4 @@
 .config/cmus/*
-!.config/cmus/autosave
 !.config/cmus/dumb.theme
 
 .config/vimb/*
