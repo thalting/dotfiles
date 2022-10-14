@@ -1,5 +1,5 @@
 # PATH
-PATH="$HOME/.local/bin:$PATH"
+PATH="$HOME/.local/bin:$HOME/.local/bin/blocks:$PATH"
 
 # others
 source /etc/profile.d/nix-daemon.sh
