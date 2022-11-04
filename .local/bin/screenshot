@@ -3,18 +3,18 @@
 case "$(printf "a selected area\\nfull screen\\na selected area (copy)\\nfull screen (copy)" | dmenu -l 4 -i )" in
     "a selected area")
         sleep 0.5
-        maim -s -u "$HOME/pictures/screenshots/pic-selected-$(date '+%y%m%d-%H%M-%S').png" && notify-send "Screenshot saved in ~/pictures/screenshots"
+        quadro -g "$(hacksaw)" -f "$HOME/pictures/screenshots/pic-selected-$(date '+%y%m%d-%H%M-%S').png" && notify-send "Screenshot saved in ~/pictures/screenshots"
         ;;
     "full screen")
         sleep 0.5
-        maim -u "$HOME/pictures/screenshots/pic-full-$(date '+%y%m%d-%H%M-%S').png" && notify-send "Screenshot saved in ~/pictures/screenshots"
+        quadro -f "$HOME/pictures/screenshots/pic-full-$(date '+%y%m%d-%H%M-%S').png" && notify-send "Screenshot saved in ~/pictures/screenshots"
         ;;
     "a selected area (copy)")
         sleep 0.5
-        maim -s -u | xclip -selection clipboard -t image/png && notify-send "Screenshot saved in clipboard"
+        quadro -g "$(hacksaw)" -f /tmp/tmp.jpg && xclip -selection clipboard -t image/png /tmp/tmp.jpg && notify-send "Screenshot saved in clipboard" && rm /tmp/tmp.jpg
         ;;
     "full screen (copy)")
         sleep 0.5
-        maim -u | xclip -selection clipboard -t image/png && notify-send "Screenshot saved in clipboard"
+        quadro -f /tmp/tmp.jpg && xclip -selection clipboard -t image/png /tmp/tmp.jpg && notify-send "Screenshot saved in clipboard" && rm /tmp/tmp.jpg
         ;;
 esac
