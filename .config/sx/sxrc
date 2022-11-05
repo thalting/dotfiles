@@ -1,11 +1,11 @@
 #!/bin/sh
 
 setxkbmap br
-setxkbmap -option caps:ctrl_modifier
+setxkbmap -option caps:escape
 
-xrdb $HOME/.Xresources
+xrdb "$HOME/.Xresources"
 
-xwallpaper --zoom $HOME/pictures/wallpapers/GhibliFull.png
+xwallpaper --zoom "$HOME/pictures/wallpapers/GhibliFull.png"
 
 xset s off -dpms
 
@@ -17,7 +17,7 @@ sxhkd &
 
 picom &
 
-pgrep -x -t $(tty) notdaemon >> /dev/null || notdaemon &
-pgrep -x -t $(tty) dwmblocks >> /dev/null || dwmblocks &
+pgrep -x -t "$(tty)" notdaemon >> /dev/null || notdaemon &
+pgrep -x -t "$(tty)" dwmblocks >> /dev/null || dwmblocks &
 
 dwm
