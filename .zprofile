@@ -1,6 +1,3 @@
-# PATH
-PATH="$HOME/.local/bin:$HOME/.local/bin/blocks:$PATH"
-
 # others
 source /etc/profile.d/nix-daemon.sh
 source $HOME/.nix-profile/etc/profile.d/hm-session-vars.sh
@@ -14,5 +11,8 @@ export XDG_USER_LOCAL="$HOME/.local"
 export XDG_DATA_HOME="$HOME/.local/share"
 
 export EDITOR="nvim"
+
+# PATH
+PATH="$HOME/.local/bin:$HOME/.local/bin/blocks:$GOPATH/bin:$PATH"
 
 [ "$(tty)" = "/dev/tty1" ] && sx 2>/dev/null
