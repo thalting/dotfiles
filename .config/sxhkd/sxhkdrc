@@ -48,6 +48,12 @@ super + {_,ctrl +}{_,shift +} {1-9}
 super + {_,ctrl +}{_,shift +} 0
     dwmc {_,toggle}{viewex,tagex} 9
 
+super + z
+    boomer
+
+Print
+    screenshot
+
 XF86AudioRaiseVolume
     pamixer -i 5 && kill -44 $(pidof dwmblocks)
 
