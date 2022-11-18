@@ -11,6 +11,7 @@ export XDG_USER_LOCAL="$HOME/.local"
 export XDG_DATA_HOME="$HOME/.local/share"
 
 export EDITOR="nvim"
+export MANPAGER="nvim +Man!"
 
 # PATH
 PATH="$HOME/.local/bin:$HOME/.local/bin/blocks:$GOPATH/bin:$PATH"
