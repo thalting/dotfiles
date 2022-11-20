@@ -5,7 +5,7 @@ setxkbmap -option caps:escape
 
 xrdb "$HOME/.Xresources"
 
-xwallpaper --zoom "$HOME/pictures/wallpapers/GhibliFull.png"
+xwallpaper --zoom "$HOME/pictures/wallpapers/Nanachi.png"
 
 xset s off -dpms
 
@@ -15,9 +15,9 @@ xbanish &
 
 sxhkd &
 
-picom &
-
 pgrep -x -t "$(tty)" notdaemon >> /dev/null || notdaemon &
 pgrep -x -t "$(tty)" dwmblocks >> /dev/null || dwmblocks &
+
+redshift &
 
 dwm
