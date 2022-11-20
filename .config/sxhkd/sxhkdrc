@@ -55,13 +55,13 @@ Print
     screenshot
 
 XF86AudioRaiseVolume
-    pamixer -i 5 && kill -44 $(pidof dwmblocks)
+    wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+ && kill -44 $(pidof dwmblocks)
 
 XF86AudioLowerVolume
-    pamixer -d 5 && kill -44 $(pidof dwmblocks)
+    wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && kill -44 $(pidof dwmblocks)
 
 XF86AudioMute
-    pamixer -t && kill -44 $(pidof dwmblocks)
+    wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && kill -44 $(pidof dwmblocks)
 
 XF86AudioPlay
     playerctl play-pause
