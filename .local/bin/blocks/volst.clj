@@ -1,7 +1,6 @@
 #!/usr/bin/env bb
 
 (require '[clojure.java.shell :refer [sh]])
-(require '[clojure.string])
 
 (let [info (-> (sh "wpctl" "get-volume" "@DEFAULT_AUDIO_SINK@")
                :out)
