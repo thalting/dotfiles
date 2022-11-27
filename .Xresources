@@ -14,6 +14,18 @@ dwm.sidepad: 10
 dwm.user_bh: 7
 
 ! ----------------------------------------------------------
+! urxvt
+! ----------------------------------------------------------
+URxvt.font: xft:Cozette
+URxvt.foreground: #d8d8d8
+URxvt.background: #0c0c0d
+URxvt.saveLines: 0
+URxvt.internalBorder: 20
+URxvt.scrollBar: false
+URxvt.perl-ext:
+URxvt.perl-ext-common:
+
+! ----------------------------------------------------------
 ! dmenu
 ! ----------------------------------------------------------
 dmenu.font: Cozette

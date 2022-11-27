@@ -15,6 +15,10 @@ xbanish &
 
 sxhkd &
 
+picom &
+
+urxvtd -q -f -o
+
 pgrep -x -t "$(tty)" notdaemon >> /dev/null || notdaemon &
 pgrep -x -t "$(tty)" dwmblocks >> /dev/null || dwmblocks &
 
