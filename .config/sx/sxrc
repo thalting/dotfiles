@@ -1,27 +1,29 @@
 #!/bin/sh
 
 setxkbmap br
-setxkbmap -option caps:escape
+setxkbmap -option caps:ctrl_modifier
 
 xrdb "$HOME/.Xresources"
 
-xwallpaper --zoom "$HOME/pictures/wallpapers/Nanachi.png"
+xwallpaper --zoom "$HOME/pictures/wallpapers/Witch.jpg"
 
 xset s off -dpms
 
 xmodmap -e "pointer = 3 2 1"
 
-xbanish &
+exec xbanish -m nw 0 &
 
-sxhkd &
+exec sxhkd &
 
-picom &
+exec picom &
 
-urxvtd -q -f -o
+exec urxvtd -q -f -o &
 
-pgrep -x -t "$(tty)" notdaemon >> /dev/null || notdaemon &
-pgrep -x -t "$(tty)" dwmblocks >> /dev/null || dwmblocks &
+pgrep -x -t "$(tty)" notdaemon >> /dev/null || exec notdaemon &
+pgrep -x -t "$(tty)" dwmblocks >> /dev/null || exec dwmblocks &
 
-redshift &
+exec redshift &
 
-dwm
+while true; do
+    dwm >/dev/null 2>&1
+done
