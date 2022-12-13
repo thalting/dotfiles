@@ -36,7 +36,6 @@ cmd tarbz2 %tar cjvf "$f.tar.bz2" "$f"
 
 map <enter> shell
 map x :exec
-map ç :push :
 map o open
 map D delete
 map R bulkrename
