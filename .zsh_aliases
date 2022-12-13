@@ -30,6 +30,8 @@ alias                                                       \
       shutdown='doas shutdown'                              \
       xrdb-update='xrdb $HOME/.Xresources'                  \
       activate='source .venv/bin/activate'                  \
+      mouse_l='xmodmap -e "pointer = 3 2 1"'                \
+      mouse_r='xmodmap -e "pointer = 1 2 3"'                \
       update-grub='doas grub-mkconfig -o /boot/grub/grub.cfg'
 
 alias sytdl='yt-dlp --external-downloader=aria2c --external-downloader-args "--min-split-size=1M --max-connection-per-server=16 --max-concurrent-downloads=16 --split=16"'
