@@ -1,0 +1,6 @@
+#!/bin/sh
+
+chosen=$(dmenu -i < "$HOME/.local/share/bookmarks")
+[ -z "$chosen" ] && exit
+echo "$chosen" | cut -d ':' -f 2- | tr -d ' ' | tr -d '\n' | xclip -selection clipboard
+notify-send "$(echo "$chosen" | cut -d ':' -f -1) copied to clipboard."
