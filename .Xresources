@@ -16,14 +16,15 @@ dwm.user_bh: 7
 ! ----------------------------------------------------------
 ! urxvt
 ! ----------------------------------------------------------
-URxvt.font: xft:Cozette
+URxvt.font: xft:Cozette, xft:Noto Color Emoji:size=8
 URxvt.foreground: #d8d8d8
 URxvt.background: #0c0c0d
 URxvt.saveLines: 0
 URxvt.internalBorder: 20
+URxvt.refreshRate: 0
 URxvt.scrollBar: false
-URxvt.perl-ext:
-URxvt.perl-ext-common:
+! fix for urxvt 9.31
+URxvt.geometry: 400x400
 
 ! ----------------------------------------------------------
 ! dmenu
