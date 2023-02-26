@@ -5,5 +5,5 @@ dtwo=$(dirname "$dir")
 dirname=$(basename "$dtwo")/$(basename "$dir")
 mkdir -p "/tmp/mango/$dirname"
 cp "$1" "/tmp/mango/$dirname/file.zip"
-unzip -q "/tmp/mango/$dirname/file.zip" -d "/tmp/mango/$dirname"
-rifle "/tmp/mango/$dirname" && rm -rf "/tmp/mango"
+2>/dev/null 1>&2 ouch decompress -y "/tmp/mango/$dirname/file.zip" -d "/tmp/mango/$dirname"
+rifle "/tmp/mango/$dirname/"* && rm -rf "/tmp/mango"
