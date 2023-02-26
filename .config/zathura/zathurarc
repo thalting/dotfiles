@@ -1,3 +1,5 @@
+set sandbox strict
+
 set font "Cozette"
 
 set default-bg                  "#0c0c0d"
