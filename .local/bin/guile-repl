@@ -4,5 +4,5 @@ set -xe
 
 SOCKET=$(pwd)/.guile-repl.socket
 if [ -f $SOCKET ]; then rm $SOCKET; fi
-guile --listen=$SOCKET
+rlwrap guile --listen=$SOCKET
 rm $SOCKET
