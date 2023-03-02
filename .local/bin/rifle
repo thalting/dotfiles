@@ -27,3 +27,11 @@ open_img() {
         nsxiv "$@" -- "$file"
     fi
 }
+
+[ "$1" = '--' ] && shift
+case "$1" in
+    "") echo "Usage: ${0##*/} PICTURES" >&2; exit 1 ;;
+    /*) open_img "$1" ;;
+    "~"/*) open_img "$HOME/${1#"~"/}" ;;
+    *) open_img "$PWD/$1" ;;
+esac
