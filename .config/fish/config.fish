@@ -1,6 +1,17 @@
 set -U fish_greeting
 
+if not functions -q fundle
+    eval (curl -sfL https://git.io/fundle-install)
+end
+
+fundle plugin jorgebucaran/autopair.fish
+fundle plugin nickeb96/puffer-fish
+fundle plugin franciscolourenco/done
+
+fundle init
+
 if status is-interactive
+    fish_config theme choose Base16\ Default\ Dark
     set fish_cursor_default block
     set fish_cursor_insert line
     set fish_cursor_replace_one underscore
