@@ -1,7 +1,7 @@
 #!/bin/sh
 
 setxkbmap br
-setxkbmap -option caps:ctrl_modifier
+setxkbmap -option caps:ctrl_modifier,shift:both_capslock
 
 xrdb "$HOME/.Xresources"
 
@@ -11,7 +11,7 @@ xset s off -dpms
 
 xmodmap -e "pointer = 3 2 1"
 
-exec xbanish -m nw 0 &
+exec xbanish &
 
 exec sxhkd &
 
@@ -19,11 +19,10 @@ exec picom &
 
 exec urxvtd -q -f -o &
 
-pgrep -x -t "$(tty)" notdaemon >> /dev/null || exec notdaemon &
+exec dunst &
+
 pgrep -x -t "$(tty)" dwmblocks >> /dev/null || exec dwmblocks &
 
 exec redshift &
 
-while true; do
-    dwm >/dev/null 2>&1
-done
+dwm >/dev/null 2>&1
