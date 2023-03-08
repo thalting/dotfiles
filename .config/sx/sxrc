@@ -1,11 +1,10 @@
 #!/bin/sh
 
-setxkbmap br
-setxkbmap -option caps:ctrl_modifier,shift:both_capslock
+setxkbmap us
 
 xrdb "$HOME/.Xresources"
 
-xwallpaper --zoom "$HOME/pictures/wallpapers/Witch.jpg"
+xwallpaper --zoom "$HOME/pictures/wallpapers/ghibli.jpg"
 
 xset s off -dpms
 
@@ -13,16 +12,12 @@ xmodmap -e "pointer = 3 2 1"
 
 exec xbanish &
 
-exec sxhkd &
-
 exec picom &
 
 exec urxvtd -q -f -o &
 
 exec dunst &
 
-pgrep -x -t "$(tty)" dwmblocks >> /dev/null || exec dwmblocks &
+xsetroot -cursor_name left_ptr
 
-exec redshift &
-
-dwm >/dev/null 2>&1
+xmonad >/dev/null 2>&1
