@@ -1,5 +1,0 @@
-#!/bin/sh
-
-curl https://easylist.to/easylist/easylist.txt -o $HOME/.local/share/luakit/adblock/easylist.txt
-curl https://easylist.to/easylist/easyprivacy.txt -o $HOME/.local/share/luakit/adblock/easyprivacy.txt
-curl https://secure.fanboy.co.nz/fanboy-annoyance.txt -o $HOME/.local/share/luakit/adblock/fanboy-annoyance.txt

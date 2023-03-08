@@ -1,5 +1,0 @@
-#!/bin/sh
-while [ -S "/tmp/.X11-unix/X${DISPLAY#:}" ]; do
-    dwm -s "┃ Volume, $(pamixer --get-volume)% $(date +"┃ %A, %d %B %Y, %I:%M %p ┃")"
-    sleep 0.1
-done
