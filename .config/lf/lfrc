@@ -22,9 +22,9 @@ cmd open ${{
 
 cmd unarchive ${{
     case "$f" in
-        *.tar.gz) tar -xzvf "$f" ;;
-        *.tar.bz2) tar -xjvf "$f" ;;
-        *.tar|*.tar.xz) tar -xvf "$f" ;;
+        *.tar.gz) ;&
+        *.tar.bz2) ;&
+        *.tar|*.tar.xz) ;&
         *.zip) ouch decompress "$f" ;;
         *) echo "Unsupported format" ;;
     esac
@@ -32,9 +32,11 @@ cmd unarchive ${{
 
 cmd bulkrename $vidir
 cmd exec %exec "$f"
-cmd tar %tar cvf "$f.tar" "$f"
-cmd targz %tar cvzf "$f.tar.gz" "$f"
-cmd tarbz2 %tar cjvf "$f.tar.bz2" "$f"
+
+cmd zip %ouch compress "$f" "$f.zip"
+cmd tar %ouch compress "$f" "$f.tar"
+cmd targz %ouch compress "$f" "$f.tar.gz"
+cmd tarbz2 %ouch compress "$f" "$f.tar.bz2"
 
 map <enter> shell
 map x :exec
