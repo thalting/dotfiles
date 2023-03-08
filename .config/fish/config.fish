@@ -36,7 +36,7 @@ if status is-login
     set -x EDITOR "nvim"
     set -x MANPAGER "nvim +Man!"
 
-    set -gx PATH $PATH "$HOME/.local/bin" "$HOME/.local/bin/blocks" "$GOPATH/bin"
+    fish_add_path "$HOME/.local/bin" "$HOME/.local/bin/blocks" "$GOPATH/bin"
 
     if test -z "$DISPLAY" -a "$XDG_VTNR" = 1
         exec sx 2>/dev/null
