@@ -3,8 +3,13 @@ import XMonad.Actions.CycleWS
 import XMonad.Hooks.EwmhDesktops
 import XMonad.Hooks.StatusBar
 import XMonad.Hooks.StatusBar.PP
+import XMonad.Layout.BinarySpacePartition
 import XMonad.Layout.Gaps
+import XMonad.Layout.NoBorders
+import XMonad.Layout.Reflect
+import XMonad.Layout.Renamed
 import XMonad.Layout.Spacing
+import XMonad.Layout.Tabbed
 import qualified XMonad.StackSet as W
 import XMonad.Util.EZConfig
 
@@ -20,10 +25,34 @@ myNormalBorderColor = "#0c0c0d"
 
 myFocusedBorderColor = "#d8d8d8"
 
-gapsWidth = 5
-myLayout = gaps [(U, gapsWidth), (D, gapsWidth), (R, gapsWidth), (L, gapsWidth)] $ spacing gapsWidth $ tiled ||| Mirror tiled ||| Full
+myTabConfig =
+  def
+    { inactiveBorderColor = "#0c0c0d",
+      activeTextColor = "#d8d8d8",
+      activeColor = "#242424",
+      inactiveColor = "#0c0c0d",
+      fontName = "xft:Cozette"
+    }
+
+myLayout = gapsConf $ fullscreenNoBorders $ trimWordLeft $ spacing gapsWidth layouts
   where
-    tiled = Tall nmaster delta ratio
+    layouts = fibonacci ||| monocle ||| tab ||| tiled ||| Mirror tiled
+
+    -- Alias
+    gapsConf = gaps [(U, gapsWidth), (D, gapsWidth), (R, gapsWidth), (L, gapsWidth)]
+    trimWordLeft = renamed [CutWordsLeft 1] -- e.g. to remove 'Spacing' from layout name
+
+    -- Custom layouts
+    fibonacci = renamed [Replace "Fibonacci"] $ reflectVert $ reflectHoriz emptyBSP
+    monocle = renamed [Replace "Monocle"] Full
+    tiled = renamed [Replace "Tiled"] $ Tall nmaster delta ratio
+    tab = renamed [Replace "Tabbed"] $ tabbed shrinkText myTabConfig
+
+    -- Only remove borders on floating windows that cover the whole screen.
+    fullscreenNoBorders = lessBorders OnlyScreenFloat
+
+    -- Others values
+    gapsWidth = 5 -- Gaps size in px
     nmaster = 1 -- Default number of windows in the master pane
     ratio = 1 / 2 -- Default proportion of screen occupied by master pane
     delta = 3 / 100 -- Percent of screen to increment by when resizing panes
