@@ -3,7 +3,7 @@ import XMonad.Actions.CycleWS
 import XMonad.Hooks.EwmhDesktops
 import XMonad.Hooks.StatusBar
 import XMonad.Hooks.StatusBar.PP
-import XMonad.Layout.NoBorders
+import XMonad.Layout.Gaps
 import XMonad.Layout.Spacing
 import qualified XMonad.StackSet as W
 import XMonad.Util.EZConfig
@@ -12,7 +12,7 @@ myMask = mod4Mask
 
 myTerminal = "urxvtc"
 
-myBorderWidth = 4
+myBorderWidth = 2
 
 myWorkspaces = ["α", "β", "γ", "δ", "ε", "ϛ", "ζ", "η", "θ", "ι"]
 
@@ -20,7 +20,8 @@ myNormalBorderColor = "#0c0c0d"
 
 myFocusedBorderColor = "#d8d8d8"
 
-myLayout = lessBorders OnlyFloat $ spacing 10 $ tiled ||| Mirror tiled ||| Full
+gapsWidth = 5
+myLayout = gaps [(U, gapsWidth), (D, gapsWidth), (R, gapsWidth), (L, gapsWidth)] $ spacing gapsWidth $ tiled ||| Mirror tiled ||| Full
   where
     tiled = Tall nmaster delta ratio
     nmaster = 1 -- Default number of windows in the master pane
@@ -37,12 +38,12 @@ myKeys =
     ("M-0", windows $ W.greedyView $ last myWorkspaces),
     ("M-S-0", windows $ W.shift $ last myWorkspaces),
     ("M-S-<Return>", windows W.swapMaster),
-    ("<F11>", spawn "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"),
-    ("<F10>", spawn "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"),
-    ("<F9>", spawn "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"),
-    ("<F6>", spawn "playerctl previous"),
-    ("<F7>", spawn "playerctl play-pause"),
-    ("<F8>", spawn "playerctl next")
+    ("<XF86AudioRaiseVolume>", spawn "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"),
+    ("<XF86AudioLowerVolume>", spawn "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"),
+    ("<XF86AudioMute>", spawn "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"),
+    ("<XF86AudioPrev>", spawn "playerctl previous"),
+    ("<XF86AudioPlay>", spawn "playerctl play-pause"),
+    ("<XF86AudioNext>", spawn "playerctl next")
   ]
 
 myConfig =
@@ -61,22 +62,19 @@ myXmobarPP =
   def
     { ppSep = magenta " ┃ ",
       ppTitleSanitize = xmobarStrip,
-      ppCurrent = wrap " " "" . xmobarBorder "Top" cyan 2,
-      ppHidden = white . wrap " " "",
-      ppHiddenNoWindows = lowWhite . wrap " " "",
+      ppCurrent = wrap " " "" . xmobarBorder "Bottom" cyan 2,
+      ppHidden = lightgray . wrap " " "",
+      ppHiddenNoWindows = gray . wrap " " "",
       ppUrgent = red . wrap (yellow "!") (yellow "!")
     }
   where
-    -- my color
-    cyan = "#8be9fd"
+    cyan = "#86c1b9"
 
-    -- xmobar color
-    magenta = xmobarColor "#ff79c6" ""
-    blue = xmobarColor "#bd93f9" ""
-    white = xmobarColor "#f8f8f2" ""
+    magenta = xmobarColor "#ba8baf" ""
+    lightgray = xmobarColor "#909090" ""
     yellow = xmobarColor "#f1fa8c" ""
     red = xmobarColor "#ff5555" ""
-    lowWhite = xmobarColor "#bbbbbb" ""
+    gray = xmobarColor "#404040" ""
 
 main =
   xmonad
