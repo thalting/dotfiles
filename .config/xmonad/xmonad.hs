@@ -44,7 +44,7 @@ myLayout = gapsConf $ fullscreenNoBorders $ trimWordLeft $ spacing gapsWidth lay
     trimWordLeft = renamed [CutWordsLeft 1] -- e.g. to remove 'Spacing' from layout name
 
     -- Custom layouts
-    fibonacci = renamed [Replace "Fibonacci"] $ Dwindle R CW 0 0
+    fibonacci = renamed [Replace "Fibonacci"] $ Dwindle R CW 1 0
     monocle = renamed [Replace "Monocle"] Full
     tiled = renamed [Replace "Tiled"] $ Tall nmaster delta ratio
     tab = renamed [Replace "Tabbed"] $ tabbed shrinkText myTabConfig
