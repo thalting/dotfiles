@@ -3,10 +3,9 @@ import XMonad.Actions.CycleWS
 import XMonad.Hooks.EwmhDesktops
 import XMonad.Hooks.StatusBar
 import XMonad.Hooks.StatusBar.PP
-import XMonad.Layout.BinarySpacePartition
+import XMonad.Layout.Dwindle
 import XMonad.Layout.Gaps
 import XMonad.Layout.NoBorders
-import XMonad.Layout.Reflect
 import XMonad.Layout.Renamed
 import XMonad.Layout.Spacing
 import XMonad.Layout.Tabbed
@@ -19,7 +18,9 @@ myTerminal = "urxvtc"
 
 myBorderWidth = 2
 
-myWorkspaces = ["α", "β", "γ", "δ", "ε", "ϛ", "ζ", "η", "θ", "ι"]
+surround l c = [c ++ x ++ c | x <- l]
+
+myWorkspaces = surround ["α", "β", "γ", "δ", "ε", "ϛ", "ζ", "η", "θ", "ι"] " "
 
 myNormalBorderColor = "#0c0c0d"
 
@@ -36,14 +37,14 @@ myTabConfig =
 
 myLayout = gapsConf $ fullscreenNoBorders $ trimWordLeft $ spacing gapsWidth layouts
   where
-    layouts = fibonacci ||| monocle ||| tab ||| tiled ||| Mirror tiled
+    layouts = fibonacci ||| monocle ||| tab ||| tiled
 
     -- Alias
     gapsConf = gaps [(U, gapsWidth), (D, gapsWidth), (R, gapsWidth), (L, gapsWidth)]
     trimWordLeft = renamed [CutWordsLeft 1] -- e.g. to remove 'Spacing' from layout name
 
     -- Custom layouts
-    fibonacci = renamed [Replace "Fibonacci"] $ reflectVert $ reflectHoriz emptyBSP
+    fibonacci = renamed [Replace "Fibonacci"] $ Dwindle R CW 0 0
     monocle = renamed [Replace "Monocle"] Full
     tiled = renamed [Replace "Tiled"] $ Tall nmaster delta ratio
     tab = renamed [Replace "Tabbed"] $ tabbed shrinkText myTabConfig
@@ -91,14 +92,17 @@ myXmobarPP =
   def
     { ppSep = magenta " ┃ ",
       ppTitleSanitize = xmobarStrip,
-      ppCurrent = wrap " " "" . xmobarBorder "Bottom" cyan 2,
-      ppHidden = lightgray . wrap " " "",
+      ppCurrent = white . wrap " " "" . xmobarBorder "Bottom" anotherMagenta 2,
+      ppHidden = lightgray . wrap " " "" . xmobarBorder "Bottom" anotherWhite 2,
       ppHiddenNoWindows = gray . wrap " " "",
       ppUrgent = red . wrap (yellow "!") (yellow "!")
     }
   where
     cyan = "#86c1b9"
+    anotherWhite = "#d8d8d8"
+    anotherMagenta = "#ba8baf"
 
+    white = xmobarColor "#ffffff" ""
     magenta = xmobarColor "#ba8baf" ""
     lightgray = xmobarColor "#909090" ""
     yellow = xmobarColor "#f1fa8c" ""
