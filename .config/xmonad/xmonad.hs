@@ -1,14 +1,19 @@
 import XMonad
+-- Actions
 import XMonad.Actions.CycleWS
+-- Hooks
 import XMonad.Hooks.EwmhDesktops
 import XMonad.Hooks.StatusBar
 import XMonad.Hooks.StatusBar.PP
+-- Layouts
 import XMonad.Layout.Dwindle
 import XMonad.Layout.Gaps
 import XMonad.Layout.NoBorders
 import XMonad.Layout.Renamed
+import XMonad.Layout.SimplestFloat
 import XMonad.Layout.Spacing
 import XMonad.Layout.Tabbed
+-- Others
 import qualified XMonad.StackSet as W
 import XMonad.Util.EZConfig
 
@@ -26,25 +31,28 @@ myNormalBorderColor = "#0c0c0d"
 
 myFocusedBorderColor = "#d8d8d8"
 
+myFocusFollowsMouse = False
+
 myTabConfig =
   def
     { inactiveBorderColor = "#0c0c0d",
       activeTextColor = "#d8d8d8",
-      activeColor = "#242424",
+      activeColor = "#181818",
       inactiveColor = "#0c0c0d",
       fontName = "xft:Cozette"
     }
 
-myLayout = gapsConf $ fullscreenNoBorders $ trimWordLeft $ spacing gapsWidth layouts
+myLayout = fullscreenNoBorders $ trimWordLeft $ gaps gapsWidth layouts
   where
-    layouts = fibonacci ||| monocle ||| tab ||| tiled
+    layouts = fibonacci ||| monocle ||| floating ||| tab ||| tiled
 
-    -- Alias
-    gapsConf = gaps [(U, gapsWidth), (D, gapsWidth), (R, gapsWidth), (L, gapsWidth)]
+    -- Alias and functions
     trimWordLeft = renamed [CutWordsLeft 1] -- e.g. to remove 'Spacing' from layout name
+    gaps i = spacingRaw False (Border i i i i) True (Border i i i i) True
 
     -- Custom layouts
     fibonacci = renamed [Replace "Fibonacci"] $ Dwindle R CW 1 0
+    floating = renamed [Replace "Floating"] simplestFloat
     monocle = renamed [Replace "Monocle"] Full
     tiled = renamed [Replace "Tiled"] $ Tall nmaster delta ratio
     tab = renamed [Replace "Tabbed"] $ tabbed shrinkText myTabConfig
@@ -63,11 +71,12 @@ myKeys =
     ("M-p", spawn "drun"),
     ("M-q", kill),
     ("M-<Tab>", toggleWS),
-    ("M-r", spawn "xmonad --recompile && xmonad --restart"),
+    ("M-S-r", spawn "xmonad --recompile && xmonad --restart"),
     -- Hack for workspace 10
     ("M-0", windows $ W.greedyView $ last myWorkspaces),
     ("M-S-0", windows $ W.shift $ last myWorkspaces),
     ("M-S-<Return>", windows W.swapMaster),
+    -- Media Keys
     ("<XF86AudioRaiseVolume>", spawn "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"),
     ("<XF86AudioLowerVolume>", spawn "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"),
     ("<XF86AudioMute>", spawn "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"),
@@ -75,18 +84,6 @@ myKeys =
     ("<XF86AudioPlay>", spawn "playerctl play-pause"),
     ("<XF86AudioNext>", spawn "playerctl next")
   ]
-
-myConfig =
-  def
-    { modMask = myMask,
-      layoutHook = myLayout,
-      terminal = myTerminal,
-      borderWidth = myBorderWidth,
-      normalBorderColor = myNormalBorderColor,
-      focusedBorderColor = myFocusedBorderColor,
-      workspaces = myWorkspaces
-    }
-    `additionalKeysP` myKeys
 
 myXmobarPP =
   def
@@ -108,6 +105,19 @@ myXmobarPP =
     yellow = xmobarColor "#f1fa8c" ""
     red = xmobarColor "#ff5555" ""
     gray = xmobarColor "#404040" ""
+
+myConfig =
+  def
+    { modMask = myMask,
+      focusFollowsMouse = myFocusFollowsMouse,
+      layoutHook = myLayout,
+      terminal = myTerminal,
+      borderWidth = myBorderWidth,
+      normalBorderColor = myNormalBorderColor,
+      focusedBorderColor = myFocusedBorderColor,
+      workspaces = myWorkspaces
+    }
+    `additionalKeysP` myKeys
 
 main =
   xmonad
