@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# qemu-vm <img>
+
+qemu-system-x86_64 \
+                  -enable-kvm -machine type=pc,accel=kvm \
+                  -m 8192 \
+                  -cpu host \
+                  -display sdl,gl=on \
+                  -device virtio-vga-gl \
+                  -device ac97 \
+                  -smp 8 \
+                  -drive file=$1,media=disk,if=virtio
