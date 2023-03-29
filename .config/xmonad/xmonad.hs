@@ -1,20 +1,31 @@
 import XMonad
-import XMonad.Actions.CycleWS (toggleWS)
+import XMonad.StackSet (focusWindow, greedyView, shift, swapMaster)
 
-import XMonad.Hooks.EwmhDesktops
-import XMonad.Hooks.StatusBar
+-- Actions
+import XMonad.Actions.CycleWS (nextWS, prevWS, toggleWS)
+import XMonad.Actions.EasyMotion (EasyMotionConfig (..), fixedSize, selectWindow)
+import XMonad.Actions.Promote (promote)
+
+-- Hooks
+import XMonad.Hooks.EwmhDesktops (ewmh, ewmhFullscreen)
+import XMonad.Hooks.ManageDocks (avoidStruts, docks, manageDocks)
+import XMonad.Hooks.ManageHelpers (composeOne, doCenterFloat, isDialog, transience, (-?>))
+import XMonad.Hooks.PositionStoreHooks (positionStoreEventHook, positionStoreManageHook)
+import XMonad.Hooks.StatusBar (defToggleStrutsKey, statusBarProp, withEasySB)
 import XMonad.Hooks.StatusBar.PP
+import XMonad.Hooks.UrgencyHook (NoUrgencyHook (NoUrgencyHook), withUrgencyHook)
 
-import XMonad.Layout.Dwindle
-import XMonad.Layout.Gaps
-import XMonad.Layout.NoBorders
-import XMonad.Layout.Renamed
-import XMonad.Layout.SimplestFloat
-import XMonad.Layout.Spacing
+-- Layout
+import XMonad.Layout.NoBorders (Ambiguity (OnlyScreenFloat), lessBorders)
+import XMonad.Layout.PositionStoreFloat (positionStoreFloat)
+import XMonad.Layout.Renamed (Rename (CutWordsLeft, Replace), renamed)
+import XMonad.Layout.Spacing (Border (Border), spacingRaw)
 import XMonad.Layout.Tabbed
 
-import XMonad.StackSet (greedyView, shift, swapMaster)
+-- Util
+import XMonad.Util.Cursor (setDefaultCursor)
 import XMonad.Util.EZConfig (additionalKeysP)
+import XMonad.Util.ClickableWorkspaces (clickablePP)
 
 myMask = mod4Mask
 
@@ -30,6 +41,8 @@ myNormalBorderColor = "#0c0c0d"
 
 myFocusedBorderColor = "#d8d8d8"
 
+myFont = "xft:Cozette"
+
 myFocusFollowsMouse = False
 
 myTabConfig =
@@ -38,20 +51,19 @@ myTabConfig =
       activeTextColor = "#d8d8d8",
       activeColor = "#181818",
       inactiveColor = "#0c0c0d",
-      fontName = "xft:Cozette"
+      fontName = myFont
     }
 
-myLayout = fullscreenNoBorders $ trimWordLeft $ gaps gapsWidth layouts
+myLayout = avoidStruts $ fullscreenNoBorders $ trimWordLeft $ gaps gapsWidth layouts
   where
-    layouts = fibonacci ||| monocle ||| floating ||| tab ||| tiled
+    layouts = tiled ||| monocle ||| tab ||| floating
 
     -- Alias and functions
     trimWordLeft = renamed [CutWordsLeft 1] -- e.g. to remove 'Spacing' from layout name
     gaps i = spacingRaw False (Border i i i i) True (Border i i i i) True
 
     -- Custom layouts
-    fibonacci = renamed [Replace "Fibonacci"] $ Dwindle R CW 1 1.2
-    floating = renamed [Replace "Floating"] simplestFloat
+    floating = renamed [Replace "Floating"] positionStoreFloat
     monocle = renamed [Replace "Monocle"] Full
     tiled = renamed [Replace "Tiled"] $ Tall nmaster delta ratio
     tab = renamed [Replace "Tabbed"] $ tabbed shrinkText myTabConfig
@@ -65,16 +77,35 @@ myLayout = fullscreenNoBorders $ trimWordLeft $ gaps gapsWidth layouts
     ratio = 1 / 2 -- Default proportion of screen occupied by master pane
     delta = 3 / 100 -- Percent of screen to increment by when resizing panes
 
+myEMConf =
+  def
+    { txtCol = "#b8b8b8",
+      bgCol = "#0c0c0d",
+      overlayF = fixedSize 25 25,
+      borderCol = "#b8b8b8",
+      borderPx = 2,
+      emFont = myFont
+    }
+
 myKeys =
   [ ("M-<Return>", spawn myTerminal),
     ("M-p", spawn "drun"),
     ("M-q", kill),
-    ("M-<Tab>", toggleWS),
     ("M-S-r", spawn "xmonad --recompile && xmonad --restart"),
-    ("M-S-<Return>", windows swapMaster),
+    ("M-S-<Return>", promote),
+
+    -- CycleWS
+    ("M-<Tab>", toggleWS),
+    ("M-,", prevWS),
+    ("M-.", nextWS),
+
     -- Hack for workspace 10
     ("M-0", windows $ greedyView $ last myWorkspaces),
     ("M-S-0", windows $ shift $ last myWorkspaces),
+
+    -- Easy Motion
+    ("M-f", selectWindow myEMConf >>= (`whenJust` windows . focusWindow)),
+
     -- Media Keys
     ("<XF86AudioRaiseVolume>", spawn "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"),
     ("<XF86AudioLowerVolume>", spawn "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"),
@@ -106,10 +137,25 @@ myXmobarPP =
     red = xmobarColor "#ff5555" ""
     gray = xmobarColor "#404040" ""
 
+myManageHook =
+  positionStoreManageHook Nothing
+    <> manageDocks
+    <> composeOne
+      [ transience,
+        isDialog -?> doCenterFloat
+      ]
+
+myHandleEventHook = positionStoreEventHook
+
+myStartupHook = setDefaultCursor xC_left_ptr
+
 myConfig =
   def
     { modMask = myMask,
       focusFollowsMouse = myFocusFollowsMouse,
+      manageHook = myManageHook,
+      handleEventHook = myHandleEventHook,
+      startupHook = myStartupHook,
       layoutHook = myLayout,
       terminal = myTerminal,
       borderWidth = myBorderWidth,
@@ -123,5 +169,7 @@ main =
   xmonad
     . ewmhFullscreen
     . ewmh
-    . withEasySB (statusBarProp "xmobar" (pure myXmobarPP)) defToggleStrutsKey
+    . withUrgencyHook NoUrgencyHook
+    . docks
+    . withEasySB (statusBarProp "xmobar" (clickablePP myXmobarPP)) defToggleStrutsKey
     $ myConfig
