@@ -4,16 +4,6 @@
 Xcursor.theme: Adwaita
 
 ! ----------------------------------------------------------
-! dwm
-! ----------------------------------------------------------
-dwm.font: Cozette
-dwm.gappx: 10
-dwm.borderpx: 4
-dwm.vertpad: 10
-dwm.sidepad: 10
-dwm.user_bh: 7
-
-! ----------------------------------------------------------
 ! urxvt
 ! ----------------------------------------------------------
 URxvt.font: xft:Cozette, xft:Noto Color Emoji:size=8
@@ -23,8 +13,6 @@ URxvt.saveLines: 0
 URxvt.internalBorder: 20
 URxvt.refreshRate: 0
 URxvt.scrollBar: false
-! fix for urxvt 9.31
-URxvt.geometry: 400x400
 
 ! ----------------------------------------------------------
 ! dmenu
@@ -47,14 +35,6 @@ Nsxiv.window.background: #0c0c0d
 Nsxiv.window.foreground: #eeeeee
 Nsxiv.bar.background: #0c0c0d
 Nsxiv.bar.foreground: #b8b8b8
-
-! ----------------------------------------------------------
-! st
-! ----------------------------------------------------------
-st.font: Cozette
-st.borderpx:          20
-st.foreground:   #0c0c0d
-st.background:   #d8d8d8
 
 ! Base16 Default Dark
 ! Scheme: Chris Kempson (http://chriskempson.com)
