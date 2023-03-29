@@ -11,13 +11,18 @@ fundle plugin franciscolourenco/done
 fundle init
 
 if status is-interactive
+    clear # fix urxvt
+
     fish_config theme choose Base16\ Default\ Dark
     set fish_cursor_default block
     set fish_cursor_insert line
     set fish_cursor_replace_one underscore
     set fish_cursor_visual block
+end
 
+function fish_user_key_bindings
     fish_vi_key_bindings
+    bind -M insert \cf accept-autosuggestion
 end
 
 if status is-login
@@ -34,6 +39,7 @@ if status is-login
     set -x XDG_DATA_HOME "$HOME/.local/share"
 
     set -x EDITOR "nvim"
+    set -x VISUAL "nvim"
     set -x MANPAGER "nvim +Man!"
 
     fish_add_path "$HOME/.local/bin" "$HOME/.local/bin/blocks" "$GOPATH/bin"
