@@ -11,7 +11,7 @@ Config { overrideRedirect = False
                     ]
        , sepChar  = "%"
        , alignSep = "}{"
-       , template = " %XMonadLog% }{ ┃ %mpris% ┃ %vol% ┃ %date% ┃ "
+       , template = "%XMonadLog% }{ ┃ %mpris% ┃ %vol% ┃ %date% ┃ "
        }
 
 -- vim:ft=haskell
