@@ -1,6 +1,6 @@
 #!/bin/sh
 
-setxkbmap us
+setxkbmap -option compose:ralt
 
 xrdb "$HOME/.Xresources"
 
@@ -8,16 +8,10 @@ xwallpaper --zoom "$HOME/pictures/wallpapers/ghibli.jpg"
 
 xset s off -dpms
 
-xmodmap -e "pointer = 3 2 1"
-
-exec xbanish &
-
 exec picom &
 
 exec urxvtd -q -f -o &
 
 exec dunst &
-
-xsetroot -cursor_name left_ptr
 
 xmonad >/dev/null 2>&1
