@@ -103,6 +103,12 @@ myKeys =
     ("M-0", windows $ greedyView $ last myWorkspaces),
     ("M-S-0", windows $ shift $ last myWorkspaces),
 
+    -- Layouts
+    ("M1-t", sendMessage $ JumpToLayout "Tiled"),
+    ("M1-b", sendMessage $ JumpToLayout "Tabbed"),
+    ("M1-f", sendMessage $ JumpToLayout "Floating"),
+    ("M1-m", sendMessage $ JumpToLayout "Monocle"),
+
     -- Easy Motion
     ("M-f", selectWindow myEMConf >>= (`whenJust` windows . focusWindow)),
 

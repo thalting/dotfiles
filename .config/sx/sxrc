@@ -4,7 +4,7 @@ setxkbmap -option compose:ralt
 
 xrdb "$HOME/.Xresources"
 
-xwallpaper --zoom "$HOME/pictures/wallpapers/ghibli.jpg"
+xwallpaper --zoom "$HOME/pictures/wallpapers/ghibli.png"
 
 xset s off -dpms
 
