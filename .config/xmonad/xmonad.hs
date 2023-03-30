@@ -8,10 +8,11 @@ import XMonad.Actions.Promote (promote)
 
 -- Hooks
 import XMonad.Hooks.EwmhDesktops (ewmh, ewmhFullscreen)
-import XMonad.Hooks.ManageDocks (avoidStruts, docks, manageDocks)
+import XMonad.Hooks.ManageDocks (manageDocks)
 import XMonad.Hooks.ManageHelpers (composeOne, doCenterFloat, isDialog, transience, (-?>))
+import XMonad.Hooks.Modal (floatMode, floatModeLabel, modal, setMode, logMode)
 import XMonad.Hooks.PositionStoreHooks (positionStoreEventHook, positionStoreManageHook)
-import XMonad.Hooks.StatusBar (defToggleStrutsKey, statusBarProp, withEasySB)
+import XMonad.Hooks.StatusBar (defToggleStrutsKey, killStatusBar, spawnStatusBar, statusBarProp, withEasySB)
 import XMonad.Hooks.StatusBar.PP
 import XMonad.Hooks.UrgencyHook (NoUrgencyHook (NoUrgencyHook), withUrgencyHook)
 
@@ -23,9 +24,10 @@ import XMonad.Layout.Spacing (Border (Border), spacingRaw)
 import XMonad.Layout.Tabbed
 
 -- Util
+import XMonad.Util.ActionCycle (cycleAction)
+import XMonad.Util.ClickableWorkspaces (clickablePP)
 import XMonad.Util.Cursor (setDefaultCursor)
 import XMonad.Util.EZConfig (additionalKeysP)
-import XMonad.Util.ClickableWorkspaces (clickablePP)
 
 myMask = mod4Mask
 
@@ -54,7 +56,7 @@ myTabConfig =
       fontName = myFont
     }
 
-myLayout = avoidStruts $ fullscreenNoBorders $ trimWordLeft $ gaps gapsWidth layouts
+myLayout = fullscreenNoBorders $ trimWordLeft $ gaps gapsWidth layouts
   where
     layouts = tiled ||| monocle ||| tab ||| floating
 
@@ -112,6 +114,12 @@ myKeys =
     -- Easy Motion
     ("M-f", selectWindow myEMConf >>= (`whenJust` windows . focusWindow)),
 
+    -- Modal
+    ("M-S-f", setMode floatModeLabel),
+
+    -- Toggle Xmobar
+    ("M-S-b", cycleAction "toggleXmobar" [killStatusBar "xmobar", spawnStatusBar "xmobar"]),
+
     -- Media Keys
     ("<XF86AudioRaiseVolume>", spawn "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"),
     ("<XF86AudioLowerVolume>", spawn "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"),
@@ -127,9 +135,12 @@ myXmobarPP =
     { ppSep = magenta " ┃ ",
       ppTitleSanitize = xmobarStrip,
       ppCurrent = white . wrap " " "" . xmobarBorder "Bottom" anotherMagenta 2,
+      ppTitle = shorten 40,
       ppHidden = lightgray . wrap " " "" . xmobarBorder "Bottom" anotherWhite 2,
       ppHiddenNoWindows = gray . wrap " " "",
-      ppUrgent = red . wrap (yellow "!") (yellow "!")
+      ppUrgent = red . wrap (yellow "!") (yellow "!"),
+      ppOrder = \(ws : l : x : xs) -> [ws, l] ++ xs ++ [x],
+      ppExtras = [logMode]
     }
   where
     cyan = "#86c1b9"
@@ -149,6 +160,9 @@ myManageHook =
     <> composeOne
       [ transience,
         isDialog -?> doCenterFloat
+      ]
+    <> composeAll
+      [ className =? "Xmessage" --> doCenterFloat
       ]
 
 myHandleEventHook = positionStoreEventHook
@@ -176,6 +190,6 @@ main =
     . ewmhFullscreen
     . ewmh
     . withUrgencyHook NoUrgencyHook
-    . docks
+    . modal [floatMode 10]
     . withEasySB (statusBarProp "xmobar" (clickablePP myXmobarPP)) defToggleStrutsKey
     $ myConfig
