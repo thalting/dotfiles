@@ -1,3 +1,4 @@
+{- ORMOLU_DISABLE -}
 import XMonad
 import XMonad.StackSet (focusWindow, greedyView, shift, swapMaster)
 
@@ -28,6 +29,7 @@ import XMonad.Util.ActionCycle (cycleAction)
 import XMonad.Util.ClickableWorkspaces (clickablePP)
 import XMonad.Util.Cursor (setDefaultCursor)
 import XMonad.Util.EZConfig (additionalKeysP)
+{- ORMOLU_ENABLE -}
 
 myMask = mod4Mask
 
@@ -89,6 +91,7 @@ myEMConf =
       emFont = myFont
     }
 
+{- ORMOLU_DISABLE -}
 myKeys =
   [ ("M-<Return>", spawn myTerminal),
     ("M-p", spawn "drun"),
@@ -129,6 +132,7 @@ myKeys =
     ("<XF86AudioNext>", spawn "playerctl next"),
     ("<Print>", spawn "screenshot")
   ]
+{- ORMOLU_ENABLE -}
 
 myXmobarPP =
   def
@@ -191,5 +195,5 @@ main =
     . ewmh
     . withUrgencyHook NoUrgencyHook
     . modal [floatMode 10]
-    . withEasySB (statusBarProp "xmobar" (clickablePP myXmobarPP)) defToggleStrutsKey
+    . withEasySB (statusBarProp "xmobar" $ clickablePP myXmobarPP) defToggleStrutsKey
     $ myConfig
