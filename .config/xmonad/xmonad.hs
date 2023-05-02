@@ -55,6 +55,9 @@ myTabConfig =
       activeTextColor = "#d8d8d8",
       activeColor = "#181818",
       inactiveColor = "#0c0c0d",
+      activeBorderWidth = 4,
+      inactiveBorderWidth = 4,
+      urgentBorderWidth = 4,
       fontName = myFont
     }
 
@@ -85,9 +88,9 @@ myEMConf =
   def
     { txtCol = "#b8b8b8",
       bgCol = "#0c0c0d",
-      overlayF = fixedSize 25 25,
+      overlayF = fixedSize 30 30,
       borderCol = "#b8b8b8",
-      borderPx = 2,
+      borderPx = 4,
       emFont = myFont
     }
 
@@ -115,13 +118,16 @@ myKeys =
     ("M1-m", sendMessage $ JumpToLayout "Monocle"),
 
     -- Easy Motion
-    ("M-f", selectWindow myEMConf >>= (`whenJust` windows . focusWindow)),
+    ("M-\\", selectWindow myEMConf >>= (`whenJust` windows . focusWindow)),
 
     -- Modal
     ("M-S-f", setMode floatModeLabel),
 
     -- Toggle Xmobar
     ("M-S-b", cycleAction "toggleXmobar" [killStatusBar "xmobar", spawnStatusBar "xmobar"]),
+
+    -- Toggle Picom
+    ("M-S-p", cycleAction "togglePicom" [spawn "notify-send 'Picom: OFF' && pkill picom", spawn "notify-send 'Picom: ON' && picom"]),
 
     -- Media Keys
     ("<XF86AudioRaiseVolume>", spawn "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"),

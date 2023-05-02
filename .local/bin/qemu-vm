@@ -10,4 +10,4 @@ qemu-system-x86_64 \
                   -device virtio-vga-gl \
                   -device ac97 \
                   -smp 8 \
-                  -drive file=$1,media=disk,if=virtio
+                  -drive file="$1",media=disk,if=virtio

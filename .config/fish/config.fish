@@ -28,8 +28,7 @@ end
 if status is-login
     set -x GOPATH "$HOME/.go"
 
-    set -x HYSTARTUP "$HOME/.config/hy/init.hy"
-    set -x PYTHONSTARTUP "$HOME/.config/python/init.py"
+    set -x PYTHONSTARTUP "$HOME/.pythonrc"
 
     set -x DEBUGINFOD_URLS "https://debuginfod.archlinux.org"
 

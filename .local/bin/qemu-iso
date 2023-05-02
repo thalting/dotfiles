@@ -9,5 +9,5 @@ qemu-system-x86_64 \
                   -display sdl,gl=on \
                   -device virtio-vga-gl \
                   -smp 8 \
-                  -drive file=$1,media=disk,if=virtio \
-                  -cdrom $2
+                  -drive file="$1",media=disk,if=virtio \
+                  -cdrom "$2"
