@@ -1,16 +1,21 @@
 {- ORMOLU_DISABLE -}
 import XMonad
-import XMonad.StackSet (focusWindow, greedyView, shift, swapMaster)
+import XMonad.StackSet (focusWindow, greedyView, shift, swapMaster, shiftMaster)
 
 -- Actions
+import qualified XMonad.Actions.FlexibleResize as Flex
 import XMonad.Actions.CycleWS (nextWS, prevWS, toggleWS)
 import XMonad.Actions.EasyMotion (EasyMotionConfig (..), fixedSize, selectWindow)
 import XMonad.Actions.Promote (promote)
+import XMonad.Actions.CopyWindow (copy, copiesPP, kill1)
+import XMonad.Actions.SinkAll
+import XMonad.Actions.TiledWindowDragging
+import XMonad.Layout.DraggingVisualizer
 
 -- Hooks
 import XMonad.Hooks.EwmhDesktops (ewmh, ewmhFullscreen)
-import XMonad.Hooks.ManageDocks (manageDocks)
-import XMonad.Hooks.ManageHelpers (composeOne, doCenterFloat, isDialog, transience, (-?>))
+import XMonad.Hooks.ManageDocks (manageDocks, checkDock)
+import XMonad.Hooks.ManageHelpers (composeOne, doCenterFloat, isDialog, transience, (-?>), doLower)
 import XMonad.Hooks.Modal (floatMode, floatModeLabel, modal, setMode, logMode)
 import XMonad.Hooks.PositionStoreHooks (positionStoreEventHook, positionStoreManageHook)
 import XMonad.Hooks.StatusBar (defToggleStrutsKey, killStatusBar, spawnStatusBar, statusBarProp, withEasySB)
@@ -21,14 +26,15 @@ import XMonad.Hooks.UrgencyHook (NoUrgencyHook (NoUrgencyHook), withUrgencyHook)
 import XMonad.Layout.NoBorders (Ambiguity (OnlyScreenFloat), lessBorders)
 import XMonad.Layout.PositionStoreFloat (positionStoreFloat)
 import XMonad.Layout.Renamed (Rename (CutWordsLeft, Replace), renamed)
-import XMonad.Layout.Spacing (Border (Border), spacingRaw)
-import XMonad.Layout.Tabbed
+import XMonad.Layout.Spacing (Border (Border), spacingRaw, incScreenSpacing, decScreenSpacing, incWindowSpacing, decWindowSpacing)
 
 -- Util
 import XMonad.Util.ActionCycle (cycleAction)
-import XMonad.Util.ClickableWorkspaces (clickablePP)
 import XMonad.Util.Cursor (setDefaultCursor)
 import XMonad.Util.EZConfig (additionalKeysP)
+
+-- Others
+import qualified Data.Map as M
 {- ORMOLU_ENABLE -}
 
 myMask = mod4Mask
@@ -49,21 +55,9 @@ myFont = "xft:Cozette"
 
 myFocusFollowsMouse = False
 
-myTabConfig =
-  def
-    { inactiveBorderColor = "#0c0c0d",
-      activeTextColor = "#d8d8d8",
-      activeColor = "#181818",
-      inactiveColor = "#0c0c0d",
-      activeBorderWidth = 4,
-      inactiveBorderWidth = 4,
-      urgentBorderWidth = 4,
-      fontName = myFont
-    }
-
 myLayout = fullscreenNoBorders $ trimWordLeft $ gaps gapsWidth layouts
   where
-    layouts = tiled ||| monocle ||| tab ||| floating
+    layouts = tiled ||| monocle ||| floating
 
     -- Alias and functions
     trimWordLeft = renamed [CutWordsLeft 1] -- e.g. to remove 'Spacing' from layout name
@@ -72,8 +66,7 @@ myLayout = fullscreenNoBorders $ trimWordLeft $ gaps gapsWidth layouts
     -- Custom layouts
     floating = renamed [Replace "Floating"] positionStoreFloat
     monocle = renamed [Replace "Monocle"] Full
-    tiled = renamed [Replace "Tiled"] $ Tall nmaster delta ratio
-    tab = renamed [Replace "Tabbed"] $ tabbed shrinkText myTabConfig
+    tiled = renamed [Replace "Tiled"] $ draggingVisualizer $ Tall nmaster delta ratio
 
     -- Only remove borders on floating windows that cover the whole screen.
     fullscreenNoBorders = lessBorders OnlyScreenFloat
@@ -98,7 +91,7 @@ myEMConf =
 myKeys =
   [ ("M-<Return>", spawn myTerminal),
     ("M-p", spawn "drun"),
-    ("M-q", kill),
+    ("M-q", kill1),
     ("M-S-r", spawn "xmonad --recompile && xmonad --restart"),
     ("M-S-<Return>", promote),
 
@@ -113,7 +106,6 @@ myKeys =
 
     -- Layouts
     ("M1-t", sendMessage $ JumpToLayout "Tiled"),
-    ("M1-b", sendMessage $ JumpToLayout "Tabbed"),
     ("M1-f", sendMessage $ JumpToLayout "Floating"),
     ("M1-m", sendMessage $ JumpToLayout "Monocle"),
 
@@ -129,6 +121,27 @@ myKeys =
     -- Toggle Picom
     ("M-S-p", cycleAction "togglePicom" [spawn "notify-send 'Picom: OFF' && pkill picom", spawn "notify-send 'Picom: ON' && picom"]),
 
+    -- Push all window back into tiling
+    ("M-S-t", sinkAll),
+
+    -- Copy Window
+    ("M-C-1", windows $ copy $ head myWorkspaces),
+    ("M-C-2", windows $ copy $ myWorkspaces !! 1),
+    ("M-C-3", windows $ copy $ myWorkspaces !! 2),
+    ("M-C-4", windows $ copy $ myWorkspaces !! 3),
+    ("M-C-5", windows $ copy $ myWorkspaces !! 4),
+    ("M-C-6", windows $ copy $ myWorkspaces !! 5),
+    ("M-C-7", windows $ copy $ myWorkspaces !! 6),
+    ("M-C-8", windows $ copy $ myWorkspaces !! 7),
+    ("M-C-9", windows $ copy $ myWorkspaces !! 8),
+    ("M-C-0", windows $ copy $ last myWorkspaces),
+
+    -- Spacing
+    ("M-C-S-k", incScreenSpacing 5),
+    ("M-C-S-j", decScreenSpacing 5),
+    ("M-C-S-l", incWindowSpacing 5),
+    ("M-C-S-h", decWindowSpacing 5),
+
     -- Media Keys
     ("<XF86AudioRaiseVolume>", spawn "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"),
     ("<XF86AudioLowerVolume>", spawn "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"),
@@ -139,6 +152,14 @@ myKeys =
     ("<Print>", spawn "screenshot")
   ]
 {- ORMOLU_ENABLE -}
+
+myMouseBindings (XConfig {XMonad.modMask = modMask}) =
+  M.fromList
+    [ ((modMask .|. shiftMask, button1), dragWindow),
+      ((modMask, button1), \w -> focus w >> mouseMoveWindow w >> windows shiftMaster),
+      ((modMask, button2), windows . (shiftMaster .) . focusWindow),
+      ((modMask, button3), \w -> focus w >> Flex.mouseResizeWindow w)
+    ]
 
 myXmobarPP =
   def
@@ -172,7 +193,8 @@ myManageHook =
         isDialog -?> doCenterFloat
       ]
     <> composeAll
-      [ className =? "Xmessage" --> doCenterFloat
+      [ className =? "Xmessage" --> doCenterFloat,
+        checkDock --> doLower
       ]
 
 myHandleEventHook = positionStoreEventHook
@@ -191,6 +213,7 @@ myConfig =
       borderWidth = myBorderWidth,
       normalBorderColor = myNormalBorderColor,
       focusedBorderColor = myFocusedBorderColor,
+      mouseBindings = myMouseBindings,
       workspaces = myWorkspaces
     }
     `additionalKeysP` myKeys
@@ -201,5 +224,5 @@ main =
     . ewmh
     . withUrgencyHook NoUrgencyHook
     . modal [floatMode 10]
-    . withEasySB (statusBarProp "xmobar" $ clickablePP myXmobarPP) defToggleStrutsKey
+    . withEasySB (statusBarProp "xmobar" (copiesPP (pad . xmobarColor "#f1fa8c" "") myXmobarPP)) defToggleStrutsKey
     $ myConfig
