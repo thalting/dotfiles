@@ -5,6 +5,7 @@ set scrolloff 10
 set incsearch
 set relativenumber
 set mouse
+set cursorpreviewfmt "\033[7;2m"
 
 cmd open ${{
     case $(file --mime-type "$(readlink -f $f)" -b) in

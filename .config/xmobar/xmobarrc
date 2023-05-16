@@ -2,16 +2,16 @@ Config { overrideRedirect = False
        , font     = "Cozette 8"
        , bgColor  = "#0c0c0d"
        , fgColor  = "#b8b8b8"
-       , position = Static { xpos = 10 , ypos = 5, width = 1580, height = 22 }
+       , position = TopHM 24 10 10 10 0
        , commands = [ Run XMonadLog
-                    , Run Com "volst.clj" [] "vol" 1
-                    , Run Com "mprisst.clj" [] "mpris" 10
+                    , Run CommandReader "playerctl --follow metadata --format '♫ {{default(trunc(artist, 20), \"N/A\")}} - {{default(trunc(title, 30), \"N/A\")}}'" "mpris"
+                    , Run CommandReader "blocks" "blocks"
                     , Run Date "%A, %d %B %Y, %I:%M %p" "date" 30
                     , Run StdinReader
                     ]
        , sepChar  = "%"
        , alignSep = "}{"
-       , template = "%XMonadLog% }{ ┃ %mpris% ┃ %vol% ┃ %date% ┃ "
+       , template = "%XMonadLog% }{ %mpris% ┃ %blocks% ┃ %date% ┃ "
        }
 
 -- vim:ft=haskell
