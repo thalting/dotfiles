@@ -5,12 +5,14 @@ case "$(printf "a selected area\\nfull screen\\na selected area (copy)\\nfull sc
         quadro -g "$(hacksaw)" -f "$HOME/pictures/screenshots/pic-selected-$(date '+%y%m%d-%H%M-%S').png" && notify-send "Screenshot saved in ~/pictures/screenshots"
         ;;
     "full screen")
+        sleep .3
         quadro -f "$HOME/pictures/screenshots/pic-full-$(date '+%y%m%d-%H%M-%S').png" && notify-send "Screenshot saved in ~/pictures/screenshots"
         ;;
     "a selected area (copy)")
         quadro -g "$(hacksaw)" -f /tmp/tmp.jpg && xclip -selection clipboard -t image/png /tmp/tmp.jpg && notify-send "Screenshot saved in clipboard" && rm /tmp/tmp.jpg
         ;;
     "full screen (copy)")
+        sleep .3
         quadro -f /tmp/tmp.jpg && xclip -selection clipboard -t image/png /tmp/tmp.jpg && notify-send "Screenshot saved in clipboard" && rm /tmp/tmp.jpg
         ;;
 esac

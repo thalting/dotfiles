@@ -6,10 +6,11 @@ import XMonad.StackSet (focusWindow, greedyView, shift, swapMaster, shiftMaster,
 import qualified XMonad.Actions.FlexibleResize as Flex
 import XMonad.Actions.CycleWS (nextWS, prevWS, toggleWS)
 import XMonad.Actions.EasyMotion (EasyMotionConfig (..), fixedSize, selectWindow)
+import XMonad.Actions.Commands (defaultCommands, runCommand)
 import XMonad.Actions.Promote (promote)
-import XMonad.Actions.SinkAll
-import XMonad.Actions.TiledWindowDragging
-import XMonad.Layout.DraggingVisualizer
+import XMonad.Actions.WindowBringer (gotoMenu, bringMenu)
+import XMonad.Actions.SinkAll (sinkAll)
+import XMonad.Actions.TiledWindowDragging (dragWindow)
 
 -- Hooks
 import XMonad.Hooks.EwmhDesktops (ewmh, ewmhFullscreen)
@@ -19,13 +20,14 @@ import XMonad.Hooks.Modal (floatMode, floatModeLabel, modal, setMode, logMode)
 import XMonad.Hooks.PositionStoreHooks (positionStoreEventHook, positionStoreManageHook)
 import XMonad.Hooks.StatusBar (defToggleStrutsKey, killStatusBar, spawnStatusBar, statusBarProp, withEasySB)
 import XMonad.Hooks.StatusBar.PP
-import XMonad.Hooks.UrgencyHook (NoUrgencyHook (NoUrgencyHook), withUrgencyHook)
 
 -- Layout
+import XMonad.Layout.Tabbed
 import XMonad.Layout.NoBorders (Ambiguity (OnlyScreenFloat), lessBorders)
 import XMonad.Layout.PositionStoreFloat (positionStoreFloat)
 import XMonad.Layout.Renamed (Rename (CutWordsLeft, Replace), renamed)
 import XMonad.Layout.Spacing (Border (Border), spacingRaw, incScreenSpacing, decScreenSpacing, incWindowSpacing, decWindowSpacing, setScreenWindowSpacing)
+import XMonad.Layout.DraggingVisualizer (draggingVisualizer)
 
 -- Util
 import qualified XMonad.Util.Hacks as Hacks
@@ -55,20 +57,33 @@ myFont = "xft:Cozette"
 
 myFocusFollowsMouse = False
 
+myClickJustFocuses = False
+
 myXmobarCMD = "cleanup() { trap : TERM; kill 0; }; trap cleanup EXIT; xmobar"
 
-myLayout = fullscreenNoBorders $ trimWordLeft $ gaps gapsWidth layouts
+myTabConfig =
+  def
+    { inactiveBorderColor = "#0c0c0d",
+      activeBorderColor = "#d8d8d8",
+      activeTextColor = "#d8d8d8",
+      activeColor = "#181818",
+      inactiveColor = "#0c0c0d",
+      fontName = myFont
+    }
+
+myLayout = fullscreenNoBorders layouts
   where
-    layouts = tiled ||| monocle ||| floating
+    layouts = tiled ||| monocle ||| floating ||| tab
 
     -- Alias and functions
-    trimWordLeft = renamed [CutWordsLeft 1] -- e.g. to remove 'Spacing' from layout name
     gaps i = spacingRaw False (Border i i i i) True (Border i i i i) True
+    tabGaps i = spacingRaw False (Border i i i i) True (Border 0 0 0 0) True
 
     -- Custom layouts
     floating = renamed [Replace "Floating"] positionStoreFloat
-    monocle = renamed [Replace "Monocle"] Full
-    tiled = renamed [Replace "Tiled"] $ draggingVisualizer $ Tall nmaster delta ratio
+    monocle = renamed [Replace "Monocle"] $ gaps gapsWidth Full
+    tiled = renamed [Replace "Tiled"] $ gaps gapsWidth $ draggingVisualizer $ Tall nmaster delta ratio
+    tab = renamed [Replace "Tabbed"] $ tabGaps (gapsWidth + 5) $ tabbed shrinkText myTabConfig
 
     -- Only remove borders on floating windows that cover the whole screen.
     fullscreenNoBorders = lessBorders OnlyScreenFloat
@@ -89,6 +104,20 @@ myEMConf =
       emFont = myFont
     }
 
+myCommands = do
+  return
+    [ ("next-layout", sendMessage NextLayout),
+      ("default-layout", asks (layoutHook . config) >>= setLayout),
+      ("tiled", sendMessage $ JumpToLayout "Tiled"),
+      ("tabbed", sendMessage $ JumpToLayout "Tabbed"),
+      ("monocle", sendMessage $ JumpToLayout "Monocle"),
+      ("floating", sendMessage $ JumpToLayout "Floating"),
+      ("restart-wm", restart "xmonad" True),
+      ("sink all", sinkAll),
+      ("kill", kill),
+      ("refresh", refresh)
+    ]
+
 {- ORMOLU_DISABLE -}
 myKeys =
   [ ("M-<Return>", spawn myTerminal),
@@ -96,6 +125,13 @@ myKeys =
     ("M-q", kill),
     ("M-S-r", spawn "xmonad --recompile && xmonad --restart"),
     ("M-S-<Return>", promote),
+
+    -- Commands
+    ("M-x x", myCommands >>= runCommand),
+
+    -- Window Finder
+    ("M-x g", gotoMenu),
+    ("M-x b", bringMenu),
 
     -- CycleWS
     ("M-<Tab>", toggleWS),
@@ -108,8 +144,9 @@ myKeys =
 
     -- Layouts
     ("M-t", sendMessage $ JumpToLayout "Tiled"),
-    ("M-f", sendMessage $ JumpToLayout "Floating"),
+    ("M-w", sendMessage $ JumpToLayout "Tabbed"),
     ("M-m", sendMessage $ JumpToLayout "Monocle"),
+    ("M-f", sendMessage $ JumpToLayout "Floating"),
 
     -- Easy Motion
     ("M-\\", selectWindow myEMConf >>= (`whenJust` windows . focusWindow)),
@@ -121,7 +158,7 @@ myKeys =
     ("M-S-b", cycleAction "toggleXmobar" [killStatusBar myXmobarCMD, spawnStatusBar myXmobarCMD]),
 
     -- Toggle Picom
-    ("M-S-C-p", cycleAction "togglePicom" [spawn "notify-send 'Picom: OFF' && pkill picom", spawn "notify-send 'Picom: ON' && picom"]),
+    ("M-S-p", cycleAction "togglePicom" [spawn "notify-send 'Picom: OFF' && pkill picom", spawn "notify-send 'Picom: ON' && picom"]),
 
     -- Push all window back into tiling
     ("M-S-C-<Space>", sinkAll),
@@ -192,8 +229,7 @@ myManageHook =
       ]
 
 myHandleEventHook =
-  handleEventHook def
-    <> positionStoreEventHook
+  positionStoreEventHook
     <> Hacks.windowedFullscreenFixEventHook
 
 myStartupHook = do
@@ -204,6 +240,7 @@ myConfig =
   def
     { modMask = myMask,
       focusFollowsMouse = myFocusFollowsMouse,
+      clickJustFocuses = myClickJustFocuses,
       manageHook = myManageHook,
       handleEventHook = myHandleEventHook,
       startupHook = myStartupHook,
@@ -221,7 +258,6 @@ main =
   xmonad
     . ewmhFullscreen
     . ewmh
-    . withUrgencyHook NoUrgencyHook
     . modal [floatMode 10]
     . withEasySB (statusBarProp myXmobarCMD (pure myXmobarPP)) defToggleStrutsKey
     $ myConfig

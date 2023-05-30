@@ -73,6 +73,10 @@ function fish_prompt
     printf '%s%s%s λ ' (set_color normal) (prompt_pwd) (set_color normal)
 end
 
+abbr cdl 'cd ~/.local'
+abbr cdc 'cd ~/.config'
+abbr cdca 'cd ~/.cache'
+
 alias g 'git'
 alias sx 'sx 2>/dev/null'
 alias gdb 'gdb -q'

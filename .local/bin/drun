@@ -10,12 +10,12 @@ else			# if no xdg dir, fall back to dotfiles in ~
 fi
 
 IFS=:
-if stest -dqr -n "$cache" $PATH; then
-	stest -flx $PATH | sort -u > "$cache"
+if stest -dqr -n "$cache" "$PATH"; then
+	stest -flx "$PATH" | sort -u > "$cache"
 fi
 unset IFS
 
-awk -v histfile=$historyfile '
+awk -v histfile="$historyfile" '
 	BEGIN {
 		while( (getline < histfile) > 0 ) {
 			sub("^[0-9]+\t","")
@@ -24,7 +24,7 @@ awk -v histfile=$historyfile '
 		}
 	} !x[$0]++ ' "$cache" \
 	| dmenu "$@" \
-	| awk -v histfile=$historyfile '
+	| awk -v histfile="$historyfile" '
 		BEGIN {
 			FS=OFS="\t"
 			while ( (getline < histfile) > 0 ) {
@@ -47,4 +47,4 @@ awk -v histfile=$historyfile '
 				print history[f],f | "sort -t '\t' -k1rn >" histfile
 		}
 	' \
-	| while read cmd; do ${SHELL:-"/bin/sh"} -c "$cmd" & done
+	| while read -r cmd; do ${SHELL:-"/bin/sh"} -c "setsid -f $cmd" & done
