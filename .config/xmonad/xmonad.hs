@@ -1,12 +1,12 @@
 {- ORMOLU_DISABLE -}
 import XMonad
-import XMonad.StackSet (focusWindow, greedyView, shift, swapMaster, shiftMaster, sink)
+import XMonad.StackSet (focusWindow, greedyView, shift, shiftMaster, sink)
 
 -- Actions
 import qualified XMonad.Actions.FlexibleResize as Flex
 import XMonad.Actions.CycleWS (nextWS, prevWS, toggleWS)
 import XMonad.Actions.EasyMotion (EasyMotionConfig (..), fixedSize, selectWindow)
-import XMonad.Actions.Commands (defaultCommands, runCommand)
+import XMonad.Actions.Commands (runCommand)
 import XMonad.Actions.Promote (promote)
 import XMonad.Actions.WindowBringer (gotoMenu, bringMenu)
 import XMonad.Actions.SinkAll (sinkAll)
@@ -21,11 +21,11 @@ import XMonad.Hooks.PositionStoreHooks (positionStoreEventHook, positionStoreMan
 import XMonad.Hooks.StatusBar (defToggleStrutsKey, killStatusBar, spawnStatusBar, statusBarProp, withEasySB)
 import XMonad.Hooks.StatusBar.PP
 
--- Layout
+-- Layouts
 import XMonad.Layout.Tabbed
 import XMonad.Layout.NoBorders (Ambiguity (OnlyScreenFloat), lessBorders)
 import XMonad.Layout.PositionStoreFloat (positionStoreFloat)
-import XMonad.Layout.Renamed (Rename (CutWordsLeft, Replace), renamed)
+import XMonad.Layout.Renamed (Rename (Replace), renamed)
 import XMonad.Layout.Spacing (Border (Border), spacingRaw, incScreenSpacing, decScreenSpacing, incWindowSpacing, decWindowSpacing, setScreenWindowSpacing)
 import XMonad.Layout.DraggingVisualizer (draggingVisualizer)
 
@@ -63,10 +63,13 @@ myXmobarCMD = "cleanup() { trap : TERM; kill 0; }; trap cleanup EXIT; xmobar"
 
 myTabConfig =
   def
-    { inactiveBorderColor = "#0c0c0d",
+    { inactiveBorderColor = "#101010",
       activeBorderColor = "#d8d8d8",
       activeTextColor = "#d8d8d8",
       activeColor = "#181818",
+      activeBorderWidth = 2,
+      inactiveBorderWidth = 2,
+      urgentBorderWidth = 2,
       inactiveColor = "#0c0c0d",
       fontName = myFont
     }
