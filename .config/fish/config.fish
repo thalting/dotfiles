@@ -70,7 +70,7 @@ function fish_mode_prompt
 end
 
 function fish_prompt
-    printf '%s%s%s λ ' (set_color normal) (prompt_pwd) (set_color normal)
+    printf '%s λ ' (prompt_pwd)
 end
 
 abbr cdl 'cd ~/.local'
