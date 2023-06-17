@@ -1,6 +1,6 @@
 {- ORMOLU_DISABLE -}
 import XMonad
-import XMonad.StackSet (focusWindow, greedyView, shift, shiftMaster, sink)
+import XMonad.StackSet (focusWindow, greedyView, shift, shiftMaster, sink, focusDown, focusUp, view, swapDown, swapUp)
 
 -- Actions
 import qualified XMonad.Actions.FlexibleResize as Flex
@@ -27,6 +27,7 @@ import XMonad.Layout.NoBorders (Ambiguity (OnlyScreenFloat), lessBorders)
 import XMonad.Layout.PositionStoreFloat (positionStoreFloat)
 import XMonad.Layout.Renamed (Rename (Replace), renamed)
 import XMonad.Layout.Spacing (Border (Border), spacingRaw, incScreenSpacing, decScreenSpacing, incWindowSpacing, decWindowSpacing, setScreenWindowSpacing)
+import XMonad.Layout.ResizableTile (ResizableTall(ResizableTall), MirrorResize (MirrorShrink, MirrorExpand))
 import XMonad.Layout.DraggingVisualizer (draggingVisualizer)
 
 -- Util
@@ -85,7 +86,7 @@ myLayout = fullscreenNoBorders layouts
     -- Custom layouts
     floating = renamed [Replace "Floating"] positionStoreFloat
     monocle = renamed [Replace "Monocle"] $ gaps gapsWidth Full
-    tiled = renamed [Replace "Tiled"] $ gaps gapsWidth $ draggingVisualizer $ Tall nmaster delta ratio
+    tiled = renamed [Replace "Tiled"] $ gaps gapsWidth $ draggingVisualizer $ ResizableTall nmaster delta ratio []
     tab = renamed [Replace "Tabbed"] $ tabGaps (gapsWidth + 5) $ tabbed shrinkText myTabConfig
 
     -- Only remove borders on floating windows that cover the whole screen.
@@ -122,12 +123,33 @@ myCommands = do
     ]
 
 {- ORMOLU_DISABLE -}
-myKeys =
+myAddKeys =
   [ ("M-<Return>", spawn myTerminal),
     ("M-p", spawn "drun"),
     ("M-q", kill),
     ("M-S-r", spawn "xmonad --recompile && xmonad --restart"),
     ("M-S-<Return>", promote),
+
+    ("M-<Down>", sendMessage MirrorShrink),
+    ("M-<Up>", sendMessage MirrorExpand),
+    ("M-<Left>", sendMessage Shrink),
+    ("M-<Right>", sendMessage Expand),
+
+    -- Resizing the master/slave ratio
+    ("M-a", sendMessage MirrorShrink),
+    ("M-z", sendMessage MirrorExpand),
+
+    -- Move focus up or down the window stack
+    ("M-j", windows focusDown),
+    ("M-k", windows focusUp),
+
+    -- Resizing the master/slave ratio
+    ("M-h", sendMessage Shrink),
+    ("M-l", sendMessage Expand),
+
+    -- Modifying the window order
+    ("M-S-j", windows swapDown),
+    ("M-S-k", windows swapUp),
 
     -- Commands
     ("M-x x", myCommands >>= runCommand),
@@ -158,7 +180,7 @@ myKeys =
     ("M-S-f", setMode floatModeLabel),
 
     -- Toggle Xmobar
-    ("M-S-b", cycleAction "toggleXmobar" [killStatusBar myXmobarCMD, spawnStatusBar myXmobarCMD]),
+    ("M-S-b", spawn "dbus-send --session --dest=org.Xmobar.Control --type=method_call '/org/Xmobar/Control' org.Xmobar.Control.SendSignal \"string:Toggle 0\""),
 
     -- Toggle Picom
     ("M-S-p", cycleAction "togglePicom" [spawn "notify-send 'Picom: OFF' && pkill picom", spawn "notify-send 'Picom: ON' && picom"]),
@@ -185,6 +207,19 @@ myKeys =
     ("<Print>", spawn "screenshot")
   ]
 {- ORMOLU_ENABLE -}
+
+myKeys conf@(XConfig {XMonad.modMask = modMask}) =
+  M.fromList $
+    [ ((modMask, xK_space), setLayout $ XMonad.layoutHook conf)
+    ]
+      ++ [ ((m .|. modMask, k), windows $ f i)
+           | (i, k) <- zip (XMonad.workspaces conf) [xK_1 .. xK_9],
+             (f, m) <- [(greedyView, 0), (shift, shiftMask)]
+         ]
+      ++ [ ((m .|. modMask, key), screenWorkspace sc >>= flip whenJust (windows . f))
+           | (key, sc) <- zip [xK_w, xK_e, xK_r] [0 ..],
+             (f, m) <- [(view, 0), (shift, shiftMask)]
+         ]
 
 myMouseBindings (XConfig {XMonad.modMask = modMask}) =
   M.fromList
@@ -230,6 +265,7 @@ myManageHook =
         title =? "Picture-in-Picture" --> doFloat,
         checkDock --> doLower
       ]
+    <> manageHook def
 
 myHandleEventHook =
   positionStoreEventHook
@@ -252,13 +288,15 @@ myConfig =
       borderWidth = myBorderWidth,
       normalBorderColor = myNormalBorderColor,
       focusedBorderColor = myFocusedBorderColor,
+      keys = myKeys,
       mouseBindings = myMouseBindings,
       workspaces = myWorkspaces
     }
-    `additionalKeysP` myKeys
+    `additionalKeysP` myAddKeys
 
 main =
   xmonad
+    . Hacks.javaHack
     . ewmhFullscreen
     . ewmh
     . modal [floatMode 10]
