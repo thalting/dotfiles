@@ -11,6 +11,7 @@ import XMonad.Actions.Promote (promote)
 import XMonad.Actions.WindowBringer (gotoMenu, bringMenu)
 import XMonad.Actions.SinkAll (sinkAll)
 import XMonad.Actions.TiledWindowDragging (dragWindow)
+import XMonad.Actions.CopyWindow (copy, kill1)
 
 -- Hooks
 import XMonad.Hooks.EwmhDesktops (ewmh, ewmhFullscreen)
@@ -19,6 +20,7 @@ import XMonad.Hooks.ManageHelpers (composeOne, doCenterFloat, isDialog, transien
 import XMonad.Hooks.Modal (floatMode, floatModeLabel, modal, setMode, logMode)
 import XMonad.Hooks.PositionStoreHooks (positionStoreEventHook, positionStoreManageHook)
 import XMonad.Hooks.StatusBar (defToggleStrutsKey, killStatusBar, spawnStatusBar, statusBarProp, withEasySB)
+import XMonad.Hooks.InsertPosition (insertPosition, Position (Below), Focus (Newer))
 import XMonad.Hooks.StatusBar.PP
 
 -- Layouts
@@ -35,6 +37,7 @@ import qualified XMonad.Util.Hacks as Hacks
 import XMonad.Util.ActionCycle (cycleAction)
 import XMonad.Util.Cursor (setDefaultCursor)
 import XMonad.Util.EZConfig (additionalKeysP)
+import XMonad.Util.ClickableWorkspaces (clickablePP)
 
 -- Others
 import qualified Data.Map as M
@@ -119,6 +122,7 @@ myCommands = do
       ("restart-wm", restart "xmonad" True),
       ("sink all", sinkAll),
       ("kill", kill),
+      ("kill1", kill1),
       ("refresh", refresh)
     ]
 
@@ -126,9 +130,10 @@ myCommands = do
 myAddKeys =
   [ ("M-<Return>", spawn myTerminal),
     ("M-p", spawn "drun"),
-    ("M-q", kill),
+    ("M-q", kill1),
     ("M-S-r", spawn "xmonad --recompile && xmonad --restart"),
     ("M-S-<Return>", promote),
+    ("M-<Home>", spawn "screenlocker"),
 
     ("M-<Down>", sendMessage MirrorShrink),
     ("M-<Up>", sendMessage MirrorExpand),
@@ -166,6 +171,7 @@ myAddKeys =
     -- Hack for workspace 10
     ("M-0", windows $ greedyView $ last myWorkspaces),
     ("M-S-0", windows $ shift $ last myWorkspaces),
+    ("M-S-C-0", windows $ copy $ last myWorkspaces),
 
     -- Layouts
     ("M-t", sendMessage $ JumpToLayout "Tiled"),
@@ -220,6 +226,10 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) =
            | (key, sc) <- zip [xK_w, xK_e, xK_r] [0 ..],
              (f, m) <- [(view, 0), (shift, shiftMask)]
          ]
+      ++ [ ((m .|. modMask, k), windows $ f i)
+           | (i, k) <- zip (XMonad.workspaces conf) [xK_1 ..],
+             (f, m) <- [(view, 0), (shift, shiftMask), (copy, shiftMask .|. controlMask)]
+         ]
 
 myMouseBindings (XConfig {XMonad.modMask = modMask}) =
   M.fromList
@@ -265,6 +275,7 @@ myManageHook =
         title =? "Picture-in-Picture" --> doFloat,
         checkDock --> doLower
       ]
+    <> insertPosition Below Newer
     <> manageHook def
 
 myHandleEventHook =
@@ -300,5 +311,5 @@ main =
     . ewmhFullscreen
     . ewmh
     . modal [floatMode 10]
-    . withEasySB (statusBarProp myXmobarCMD (pure myXmobarPP)) defToggleStrutsKey
+    . withEasySB (statusBarProp myXmobarCMD (clickablePP myXmobarPP)) defToggleStrutsKey
     $ myConfig
