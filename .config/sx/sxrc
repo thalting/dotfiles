@@ -2,14 +2,10 @@
 
 xrdb "$HOME/.Xresources"
 
-xwallpaper --zoom "$HOME/pictures/wallpapers/house.jpg"
+xwallpaper --zoom "$HOME/pictures/wallpapers/wallpaper.png"
 
 xset s off -dpms
 
-exec picom &
-
 exec urxvtd -q -f -o &
-
-exec dunst &
 
 xmonad >/dev/null 2>&1

@@ -41,6 +41,7 @@ import XMonad.Util.ClickableWorkspaces (clickablePP)
 
 -- Others
 import qualified Data.Map as M
+import System.Exit (exitSuccess)
 {- ORMOLU_ENABLE -}
 
 myMask = mod4Mask
@@ -49,9 +50,9 @@ myTerminal = "urxvtc"
 
 myBorderWidth = 2
 
-surround l c = [c ++ x ++ c | x <- l]
-
-myWorkspaces = surround ["α", "β", "γ", "δ", "ε", "ϛ", "ζ", "η", "θ", "ι"] " "
+myWorkspaces = ["α", "β", "γ", "δ", "ε", "ϛ", "ζ", "η", "θ", "ι"] `surround` " "
+  where
+    surround l c = [c ++ x ++ c | x <- l]
 
 myNormalBorderColor = "#0c0c0d"
 
@@ -111,7 +112,7 @@ myEMConf =
       emFont = myFont
     }
 
-myCommands = do
+myCommands =
   return
     [ ("next-layout", sendMessage NextLayout),
       ("default-layout", asks (layoutHook . config) >>= setLayout),
@@ -131,6 +132,7 @@ myAddKeys =
   [ ("M-<Return>", spawn myTerminal),
     ("M-p", spawn "drun"),
     ("M-q", kill1),
+    ("M-S-q", io exitSuccess),
     ("M-S-r", spawn "xmonad --recompile && xmonad --restart"),
     ("M-S-<Return>", promote),
     ("M-<Home>", spawn "screenlocker"),
@@ -236,7 +238,9 @@ myMouseBindings (XConfig {XMonad.modMask = modMask}) =
     [ ((modMask .|. shiftMask, button1), dragWindow),
       ((modMask, button1), \w -> focus w >> mouseMoveWindow w >> windows shiftMaster),
       ((modMask, button2), windows . (shiftMaster .) . focusWindow),
-      ((modMask, button3), \w -> focus w >> Flex.mouseResizeWindow w)
+      ((modMask, button3), \w -> focus w >> Flex.mouseResizeWindow w),
+      ((modMask, button4), const nextWS),
+      ((modMask, button5), const prevWS)
     ]
 
 myXmobarPP =
@@ -285,6 +289,9 @@ myHandleEventHook =
 myStartupHook = do
   setDefaultCursor xC_left_ptr
   spawn "setxkbmap -option compose:ralt"
+  spawn "picom"
+  spawn "dunst"
+  spawn "xss-lock --transfer-sleep-lock -- screenlocker"
 
 myConfig =
   def
