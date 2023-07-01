@@ -8,4 +8,8 @@ xset s off -dpms
 
 exec urxvtd -q -f -o &
 
+exec picom &
+
+exec dunst &
+
 xmonad >/dev/null 2>&1

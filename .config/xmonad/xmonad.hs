@@ -135,7 +135,6 @@ myAddKeys =
     ("M-S-q", io exitSuccess),
     ("M-S-r", spawn "xmonad --recompile && xmonad --restart"),
     ("M-S-<Return>", promote),
-    ("M-<Home>", spawn "screenlocker"),
 
     ("M-<Down>", sendMessage MirrorShrink),
     ("M-<Up>", sendMessage MirrorExpand),
@@ -221,7 +220,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) =
     [ ((modMask, xK_space), setLayout $ XMonad.layoutHook conf)
     ]
       ++ [ ((m .|. modMask, k), windows $ f i)
-           | (i, k) <- zip (XMonad.workspaces conf) [xK_1 .. xK_9],
+           | (i, k) <- zip (XMonad.workspaces conf) [xK_1 ..],
              (f, m) <- [(greedyView, 0), (shift, shiftMask)]
          ]
       ++ [ ((m .|. modMask, key), screenWorkspace sc >>= flip whenJust (windows . f))
@@ -289,9 +288,6 @@ myHandleEventHook =
 myStartupHook = do
   setDefaultCursor xC_left_ptr
   spawn "setxkbmap -option compose:ralt"
-  spawn "picom"
-  spawn "dunst"
-  spawn "xss-lock --transfer-sleep-lock -- screenlocker"
 
 myConfig =
   def
