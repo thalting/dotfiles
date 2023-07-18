@@ -25,6 +25,7 @@ import XMonad.Hooks.StatusBar.PP
 
 -- Layouts
 import XMonad.Layout.Tabbed
+import XMonad.Layout.TrackFloating (trackFloating, useTransientFor)
 import XMonad.Layout.NoBorders (Ambiguity (OnlyScreenFloat), lessBorders)
 import XMonad.Layout.PositionStoreFloat (positionStoreFloat)
 import XMonad.Layout.Renamed (Rename (Replace), renamed)
@@ -79,7 +80,7 @@ myTabConfig =
       fontName = myFont
     }
 
-myLayout = fullscreenNoBorders layouts
+myLayout = fullscreenNoBorders $ trackFloating $ useTransientFor layouts
   where
     layouts = tiled ||| monocle ||| floating ||| tab
 
@@ -169,11 +170,6 @@ myAddKeys =
     ("M-,", prevWS),
     ("M-.", nextWS),
 
-    -- Hack for workspace 10
-    ("M-0", windows $ greedyView $ last myWorkspaces),
-    ("M-S-0", windows $ shift $ last myWorkspaces),
-    ("M-S-C-0", windows $ copy $ last myWorkspaces),
-
     -- Layouts
     ("M-t", sendMessage $ JumpToLayout "Tiled"),
     ("M-w", sendMessage $ JumpToLayout "Tabbed"),
@@ -190,7 +186,7 @@ myAddKeys =
     ("M-S-b", spawn "dbus-send --session --dest=org.Xmobar.Control --type=method_call '/org/Xmobar/Control' org.Xmobar.Control.SendSignal \"string:Toggle 0\""),
 
     -- Toggle Picom
-    ("M-S-p", cycleAction "togglePicom" [spawn "notify-send 'Picom: OFF' && pkill picom", spawn "notify-send 'Picom: ON' && picom"]),
+    ("M-C-S-p", cycleAction "togglePicom" [spawn "notify-send 'Picom: OFF' && pkill picom", spawn "notify-send 'Picom: ON' && picom"]),
 
     -- Push all window back into tiling
     ("M-S-C-<Space>", sinkAll),
@@ -220,7 +216,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) =
     [ ((modMask, xK_space), setLayout $ XMonad.layoutHook conf)
     ]
       ++ [ ((m .|. modMask, k), windows $ f i)
-           | (i, k) <- zip (XMonad.workspaces conf) [xK_1 ..],
+           | (i, k) <- zip (XMonad.workspaces conf) ([xK_1 .. xK_9] ++ [xK_0]),
              (f, m) <- [(greedyView, 0), (shift, shiftMask)]
          ]
       ++ [ ((m .|. modMask, key), screenWorkspace sc >>= flip whenJust (windows . f))
@@ -228,7 +224,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) =
              (f, m) <- [(view, 0), (shift, shiftMask)]
          ]
       ++ [ ((m .|. modMask, k), windows $ f i)
-           | (i, k) <- zip (XMonad.workspaces conf) [xK_1 ..],
+           | (i, k) <- zip (XMonad.workspaces conf) ([xK_1 .. xK_9] ++ [xK_0]),
              (f, m) <- [(view, 0), (shift, shiftMask), (copy, shiftMask .|. controlMask)]
          ]
 
