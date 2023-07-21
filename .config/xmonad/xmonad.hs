@@ -65,8 +65,6 @@ myFocusFollowsMouse = False
 
 myClickJustFocuses = False
 
-myXmobarCMD = "cleanup() { trap : TERM; kill 0; }; trap cleanup EXIT; xmobar"
-
 myTabConfig =
   def
     { inactiveBorderColor = "#101010",
@@ -211,12 +209,12 @@ myAddKeys =
   ]
 {- ORMOLU_ENABLE -}
 
-myKeys conf@(XConfig {XMonad.modMask = modMask}) =
+myKeys (XConfig {modMask = modMask, workspaces = workspaces, layoutHook = layoutHook}) =
   M.fromList $
-    [ ((modMask, xK_space), setLayout $ XMonad.layoutHook conf)
+    [ ((modMask, xK_space), setLayout layoutHook)
     ]
       ++ [ ((m .|. modMask, k), windows $ f i)
-           | (i, k) <- zip (XMonad.workspaces conf) ([xK_1 .. xK_9] ++ [xK_0]),
+           | (i, k) <- zip workspaces workspaceKeys,
              (f, m) <- [(greedyView, 0), (shift, shiftMask)]
          ]
       ++ [ ((m .|. modMask, key), screenWorkspace sc >>= flip whenJust (windows . f))
@@ -224,11 +222,13 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) =
              (f, m) <- [(view, 0), (shift, shiftMask)]
          ]
       ++ [ ((m .|. modMask, k), windows $ f i)
-           | (i, k) <- zip (XMonad.workspaces conf) ([xK_1 .. xK_9] ++ [xK_0]),
+           | (i, k) <- zip workspaces workspaceKeys,
              (f, m) <- [(view, 0), (shift, shiftMask), (copy, shiftMask .|. controlMask)]
          ]
+  where
+    workspaceKeys = [xK_1 .. xK_9] ++ [xK_0]
 
-myMouseBindings (XConfig {XMonad.modMask = modMask}) =
+myMouseBindings (XConfig {modMask = modMask}) =
   M.fromList
     [ ((modMask .|. shiftMask, button1), dragWindow),
       ((modMask, button1), \w -> focus w >> mouseMoveWindow w >> windows shiftMaster),
@@ -310,5 +310,5 @@ main =
     . ewmhFullscreen
     . ewmh
     . modal [floatMode 10]
-    . withEasySB (statusBarProp myXmobarCMD (clickablePP myXmobarPP)) defToggleStrutsKey
+    . withEasySB (statusBarProp "xmobar" $ clickablePP myXmobarPP) defToggleStrutsKey
     $ myConfig
