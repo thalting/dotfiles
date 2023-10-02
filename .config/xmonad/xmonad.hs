@@ -16,11 +16,11 @@ import XMonad.Actions.CopyWindow (copy, kill1)
 -- Hooks
 import XMonad.Hooks.EwmhDesktops (ewmh, ewmhFullscreen)
 import XMonad.Hooks.ManageDocks (manageDocks, checkDock)
-import XMonad.Hooks.ManageHelpers (composeOne, doCenterFloat, isDialog, transience, (-?>), doLower)
+import XMonad.Hooks.ManageHelpers (doCenterFloat, isDialog, transience, (-?>), isFullscreen, doFullFloat, transience')
 import XMonad.Hooks.Modal (floatMode, floatModeLabel, modal, setMode, logMode)
 import XMonad.Hooks.PositionStoreHooks (positionStoreEventHook, positionStoreManageHook)
 import XMonad.Hooks.StatusBar (defToggleStrutsKey, killStatusBar, spawnStatusBar, statusBarProp, withEasySB)
-import XMonad.Hooks.InsertPosition (insertPosition, Position (Below), Focus (Newer))
+import XMonad.Hooks.InsertPosition (insertPosition, Focus (Newer), Position (End))
 import XMonad.Hooks.StatusBar.PP
 
 -- Layouts
@@ -112,7 +112,7 @@ myEMConf =
     }
 
 myCommands =
-  return
+  pure
     [ ("next-layout", sendMessage NextLayout),
       ("default-layout", asks (layoutHook . config) >>= setLayout),
       ("tiled", sendMessage $ JumpToLayout "Tiled"),
@@ -265,16 +265,14 @@ myXmobarPP =
 myManageHook =
   positionStoreManageHook Nothing
     <> manageDocks
-    <> composeOne
-      [ transience,
-        isDialog -?> doCenterFloat
-      ]
     <> composeAll
       [ className =? "Xmessage" --> doCenterFloat,
         title =? "Picture-in-Picture" --> doFloat,
-        checkDock --> doLower
+        isFullscreen --> doFullFloat,
+        isDialog --> doFloat,
+        transience'
       ]
-    <> insertPosition Below Newer
+    <> insertPosition End Newer
     <> manageHook def
 
 myHandleEventHook =
@@ -284,6 +282,7 @@ myHandleEventHook =
 myStartupHook = do
   setDefaultCursor xC_left_ptr
   spawn "setxkbmap -option compose:ralt"
+  spawn "xrandr --output HDMI-0 --mode 1920x1080 --rate 74.97"
 
 myConfig =
   def

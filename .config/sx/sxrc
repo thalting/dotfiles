@@ -2,7 +2,7 @@
 
 xrdb "$HOME/.Xresources"
 
-xwallpaper --zoom "$HOME/pictures/wallpapers/wallpaper.png"
+xwallpaper --zoom "$HOME/pictures/wallpapers/fuji.png"
 
 xset s off -dpms
 

@@ -2,7 +2,8 @@ Config { overrideRedirect = False
        , font     = "Cozette 8"
        , bgColor  = "#0c0c0d"
        , fgColor  = "#b8b8b8"
-       , position = TopHM 24 10 10 10 0
+       , position = TopHM 25 10 10 10 0
+       , textOffset = 1
        , commands = [ Run XMonadLog
                     , Run CommandReader "playerctl --follow metadata --format '♫ {{default(trunc(artist, 20), \"N/A\")}} - {{default(trunc(title, 30), \"N/A\")}}'" "mpris"
                     , Run CommandReader "blocks" "blocks"

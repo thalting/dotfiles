@@ -17,7 +17,7 @@ URxvt.scrollBar: false
 ! ----------------------------------------------------------
 ! dmenu
 ! ----------------------------------------------------------
-dmenu.font: Cozette
+dmenu.font: Cozette:size=12.5
 dmenu.normbgcolor: #0c0c0d
 dmenu.normfgcolor: #d8d8d8
 dmenu.selbgcolor: #d8d8d8
