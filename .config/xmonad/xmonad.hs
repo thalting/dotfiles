@@ -20,7 +20,7 @@ import XMonad.Hooks.ManageHelpers (doCenterFloat, isDialog, transience, (-?>), i
 import XMonad.Hooks.Modal (floatMode, floatModeLabel, modal, setMode, logMode)
 import XMonad.Hooks.PositionStoreHooks (positionStoreEventHook, positionStoreManageHook)
 import XMonad.Hooks.StatusBar (defToggleStrutsKey, killStatusBar, spawnStatusBar, statusBarProp, withEasySB)
-import XMonad.Hooks.InsertPosition (insertPosition, Focus (Newer), Position (End))
+import XMonad.Hooks.InsertPosition (insertPosition, Focus (Newer), Position (Below))
 import XMonad.Hooks.StatusBar.PP
 
 -- Layouts
@@ -270,9 +270,9 @@ myManageHook =
         title =? "Picture-in-Picture" --> doFloat,
         isFullscreen --> doFullFloat,
         isDialog --> doFloat,
+        fmap not willFloat --> insertPosition Below Newer,
         transience'
       ]
-    <> insertPosition End Newer
     <> manageHook def
 
 myHandleEventHook =
