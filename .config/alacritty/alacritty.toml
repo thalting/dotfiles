@@ -1,0 +1,38 @@
+[font]
+normal = { family = "Cozette", style = "Regular" }
+offset = { x = 1, y = 0 }
+
+[scrolling]
+history = 0
+multiplier = 0
+
+[window]
+padding = { x = 20, y = 20 }
+
+[colors.primary]
+background = "#0c0c0d"
+foreground = "#d8d8d8"
+
+[colors.cursor]
+text = '#181818'
+cursor = '#d8d8d8'
+
+[colors.normal]
+black = '#181818'
+red = '#ab4642'
+green = '#a1b56c'
+yellow = '#f7ca88'
+blue = '#7cafc2'
+magenta = '#ba8baf'
+cyan = '#86c1b9'
+white = '#d8d8d8'
+
+[colors.bright]
+black = '#585858'
+red = '#ab4642'
+green = '#a1b56c'
+yellow = '#f7ca88'
+blue = '#7cafc2'
+magenta = '#ba8baf'
+cyan = '#86c1b9'
+white = '#f8f8f8'
