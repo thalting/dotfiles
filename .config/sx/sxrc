@@ -2,11 +2,9 @@
 
 xrdb "$HOME/.Xresources"
 
-xwallpaper --zoom "$HOME/pictures/wallpapers/fuji.png"
+xwallpaper --zoom "$HOME/pictures/wallpapers/street.png"
 
 xset s off -dpms
-
-exec urxvtd -q -f -o &
 
 exec picom &
 
