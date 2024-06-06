@@ -9,7 +9,7 @@ import XMonad.Actions.EasyMotion (EasyMotionConfig (..), fixedSize, selectWindow
 import XMonad.Actions.Commands (runCommand)
 import XMonad.Actions.Promote (promote)
 import XMonad.Actions.WindowBringer (gotoMenu, bringMenu)
-import XMonad.Actions.SinkAll (sinkAll)
+import XMonad.Actions.WithAll (sinkAll)
 import XMonad.Actions.TiledWindowDragging (dragWindow)
 import XMonad.Actions.CopyWindow (copy, kill1)
 
@@ -25,13 +25,13 @@ import XMonad.Hooks.StatusBar.PP
 
 -- Layouts
 import XMonad.Layout.Tabbed
-import XMonad.Layout.TrackFloating (trackFloating, useTransientFor)
 import XMonad.Layout.NoBorders (Ambiguity (OnlyScreenFloat), lessBorders)
 import XMonad.Layout.PositionStoreFloat (positionStoreFloat)
 import XMonad.Layout.Renamed (Rename (Replace), renamed)
 import XMonad.Layout.Spacing (Border (Border), spacingRaw, incScreenSpacing, decScreenSpacing, incWindowSpacing, decWindowSpacing, setScreenWindowSpacing)
-import XMonad.Layout.ResizableTile (ResizableTall(ResizableTall), MirrorResize (MirrorShrink, MirrorExpand))
+import XMonad.Layout.ResizableTile (ResizableTall (ResizableTall), MirrorResize (MirrorShrink, MirrorExpand))
 import XMonad.Layout.DraggingVisualizer (draggingVisualizer)
+import XMonad.Layout.Fullscreen (fullscreenSupport)
 
 -- Util
 import qualified XMonad.Util.Hacks as Hacks
@@ -43,11 +43,18 @@ import XMonad.Util.ClickableWorkspaces (clickablePP)
 -- Others
 import qualified Data.Map as M
 import System.Exit (exitSuccess)
+import XMonad.Layout.FocusTracking (focusTracking)
+import XMonad.Actions.ToggleFullFloat (toggleFullFloat, toggleFullFloatEwmhFullscreen)
+
+import XMonad.Prompt
+import XMonad.Prompt.Shell
+import XMonad.Prompt.FuzzyMatch
+import XMonad.Prompt.Pass
 {- ORMOLU_ENABLE -}
 
 myMask = mod4Mask
 
-myTerminal = "urxvtc"
+myTerminal = "alacritty msg create-window || alacritty"
 
 myBorderWidth = 2
 
@@ -78,7 +85,7 @@ myTabConfig =
       fontName = myFont
     }
 
-myLayout = fullscreenNoBorders $ trackFloating $ useTransientFor layouts
+myLayout = fullscreenNoBorders $ focusTracking layouts
   where
     layouts = tiled ||| monocle ||| floating ||| tab
 
@@ -129,7 +136,7 @@ myCommands =
 {- ORMOLU_DISABLE -}
 myAddKeys =
   [ ("M-<Return>", spawn myTerminal),
-    ("M-p", spawn "drun"),
+    ("M-p", spawn "rofi -show run"),
     ("M-q", kill1),
     ("M-S-q", io exitSuccess),
     ("M-S-r", spawn "xmonad --recompile && xmonad --restart"),
@@ -174,11 +181,13 @@ myAddKeys =
     ("M-m", sendMessage $ JumpToLayout "Monocle"),
     ("M-f", sendMessage $ JumpToLayout "Floating"),
 
+    ("M-S-<Space>", asks (layoutHook . config) >>= setLayout),
+
     -- Easy Motion
     ("M-\\", selectWindow myEMConf >>= (`whenJust` windows . focusWindow)),
 
     -- Modal
-    ("M-S-f", setMode floatModeLabel),
+    ("M1-S-f", setMode floatModeLabel),
 
     -- Toggle Xmobar
     ("M-S-b", spawn "dbus-send --session --dest=org.Xmobar.Control --type=method_call '/org/Xmobar/Control' org.Xmobar.Control.SendSignal \"string:Toggle 0\""),
@@ -186,10 +195,16 @@ myAddKeys =
     -- Toggle Picom
     ("M-C-S-p", cycleAction "togglePicom" [spawn "notify-send 'Picom: OFF' && pkill picom", spawn "notify-send 'Picom: ON' && picom"]),
 
+    -- increase or decrease number of windows in the master area
+    ("M-i", sendMessage $ IncMasterN 1),
+    ("M-d", sendMessage $ IncMasterN $ -1),
+
     -- Push all window back into tiling
     ("M-S-C-<Space>", sinkAll),
     -- Push window back into tiling
-    ("M-S-<Space>", withFocused $ windows . sink),
+    ("M-<Space>", withFocused $ windows . sink),
+
+    ("M-S-f", withFocused toggleFullFloat),
 
     -- Spacing
     ("M-C-S-r", setScreenWindowSpacing 5),
@@ -199,9 +214,9 @@ myAddKeys =
     ("M-C-S-h", decWindowSpacing 5),
 
     -- Media Keys
-    ("<XF86AudioRaiseVolume>", spawn "wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+ && pkill -RTMIN+10 blocks"),
-    ("<XF86AudioLowerVolume>", spawn "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && pkill -RTMIN+10 blocks"),
-    ("<XF86AudioMute>", spawn "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && pkill -RTMIN+10 blocks"),
+    ("<XF86AudioRaiseVolume>", spawn "wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+ && client --name vol"),
+    ("<XF86AudioLowerVolume>", spawn "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && client --name vol"),
+    ("<XF86AudioMute>", spawn "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && client --name vol"),
     ("<XF86AudioPrev>", spawn "playerctl previous"),
     ("<XF86AudioPlay>", spawn "playerctl play-pause"),
     ("<XF86AudioNext>", spawn "playerctl next"),
@@ -211,12 +226,10 @@ myAddKeys =
 
 myKeys (XConfig {modMask = modMask, workspaces = workspaces, layoutHook = layoutHook}) =
   M.fromList $
-    [ ((modMask, xK_space), setLayout layoutHook)
+    [ ((m .|. modMask, k), windows $ f i)
+      | (i, k) <- zip workspaces workspaceKeys,
+        (f, m) <- [(greedyView, 0), (shift, shiftMask)]
     ]
-      ++ [ ((m .|. modMask, k), windows $ f i)
-           | (i, k) <- zip workspaces workspaceKeys,
-             (f, m) <- [(greedyView, 0), (shift, shiftMask)]
-         ]
       ++ [ ((m .|. modMask, key), screenWorkspace sc >>= flip whenJust (windows . f))
            | (key, sc) <- zip [xK_w, xK_e, xK_r] [0 ..],
              (f, m) <- [(view, 0), (shift, shiftMask)]
@@ -266,9 +279,7 @@ myManageHook =
   positionStoreManageHook Nothing
     <> manageDocks
     <> composeAll
-      [ className =? "Xmessage" --> doCenterFloat,
-        title =? "Picture-in-Picture" --> doFloat,
-        isFullscreen --> doFullFloat,
+      [ isFullscreen --> doFullFloat,
         isDialog --> doFloat,
         fmap not willFloat --> insertPosition Below Newer,
         transience'
@@ -281,7 +292,9 @@ myHandleEventHook =
 
 myStartupHook = do
   setDefaultCursor xC_left_ptr
-  spawn "setxkbmap -option compose:ralt"
+  spawn "xinput --set-prop 'pointer:Compx VXE NordicMouse 1K Dongle' 'libinput Accel Speed' -0.75"
+  spawn "xinput set-prop 'Primax Kensington Eagle Trackball' 'libinput Natural Scrolling Enabled' 1"
+  spawn "xinput set-prop 'Primax Kensington Eagle Trackball' 'libinput Left Handed Enabled' 1"
   spawn "xrandr --output HDMI-0 --mode 1920x1080 --rate 74.97"
 
 myConfig =
@@ -306,6 +319,8 @@ myConfig =
 main =
   xmonad
     . Hacks.javaHack
+    . fullscreenSupport
+    . toggleFullFloatEwmhFullscreen
     . ewmhFullscreen
     . ewmh
     . modal [floatMode 10]
