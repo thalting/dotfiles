@@ -16,7 +16,7 @@ import XMonad.Actions.CopyWindow (copy, kill1)
 -- Hooks
 import XMonad.Hooks.EwmhDesktops (ewmh, ewmhFullscreen)
 import XMonad.Hooks.ManageDocks (manageDocks, checkDock)
-import XMonad.Hooks.ManageHelpers (doCenterFloat, isDialog, transience, (-?>), isFullscreen, doFullFloat, transience')
+import XMonad.Hooks.ManageHelpers (doCenterFloat, isDialog, transience, (-?>), isFullscreen, doFullFloat, doLower, transience')
 import XMonad.Hooks.Modal (floatMode, floatModeLabel, modal, setMode, logMode)
 import XMonad.Hooks.PositionStoreHooks (positionStoreEventHook, positionStoreManageHook)
 import XMonad.Hooks.StatusBar (defToggleStrutsKey, killStatusBar, spawnStatusBar, statusBarProp, withEasySB)
@@ -130,7 +130,8 @@ myCommands =
       ("sink all", sinkAll),
       ("kill", kill),
       ("kill1", kill1),
-      ("refresh", refresh)
+      ("refresh", refresh),
+      ("setup-inputs", setupInputs)
     ]
 
 {- ORMOLU_DISABLE -}
@@ -282,6 +283,7 @@ myManageHook =
       [ isFullscreen --> doFullFloat,
         isDialog --> doFloat,
         fmap not willFloat --> insertPosition Below Newer,
+        checkDock --> doLower,
         transience'
       ]
     <> manageHook def
@@ -290,11 +292,14 @@ myHandleEventHook =
   positionStoreEventHook
     <> Hacks.windowedFullscreenFixEventHook
 
-myStartupHook = do
-  setDefaultCursor xC_left_ptr
+setupInputs = do
   spawn "xinput --set-prop 'pointer:Compx VXE NordicMouse 1K Dongle' 'libinput Accel Speed' -0.75"
   spawn "xinput set-prop 'Primax Kensington Eagle Trackball' 'libinput Natural Scrolling Enabled' 1"
   spawn "xinput set-prop 'Primax Kensington Eagle Trackball' 'libinput Left Handed Enabled' 1"
+
+myStartupHook = do
+  setDefaultCursor xC_left_ptr
+  setupInputs
   spawn "xrandr --output HDMI-0 --mode 1920x1080 --rate 74.97"
 
 myConfig =
