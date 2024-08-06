@@ -45,11 +45,6 @@ import qualified Data.Map as M
 import System.Exit (exitSuccess)
 import XMonad.Layout.FocusTracking (focusTracking)
 import XMonad.Actions.ToggleFullFloat (toggleFullFloat, toggleFullFloatEwmhFullscreen)
-
-import XMonad.Prompt
-import XMonad.Prompt.Shell
-import XMonad.Prompt.FuzzyMatch
-import XMonad.Prompt.Pass
 {- ORMOLU_ENABLE -}
 
 myMask = mod4Mask
@@ -127,7 +122,7 @@ myCommands =
       ("monocle", sendMessage $ JumpToLayout "Monocle"),
       ("floating", sendMessage $ JumpToLayout "Floating"),
       ("restart-wm", restart "xmonad" True),
-      ("sink all", sinkAll),
+      ("sink-all", sinkAll),
       ("kill", kill),
       ("kill1", kill1),
       ("refresh", refresh),
@@ -293,7 +288,7 @@ myHandleEventHook =
     <> Hacks.windowedFullscreenFixEventHook
 
 setupInputs = do
-  spawn "xinput --set-prop 'pointer:Compx VXE NordicMouse 1K Dongle' 'libinput Accel Speed' -0.75"
+  spawn "xinput set-prop 'pointer:Compx VXE NordicMouse 1K Dongle' 'libinput Accel Speed' -0.75"
   spawn "xinput set-prop 'Primax Kensington Eagle Trackball' 'libinput Natural Scrolling Enabled' 1"
   spawn "xinput set-prop 'Primax Kensington Eagle Trackball' 'libinput Left Handed Enabled' 1"
 

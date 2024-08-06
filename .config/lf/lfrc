@@ -11,7 +11,7 @@ cmd open ${{
     case $(file --mime-type "$(readlink -f $f)" -b) in
     application/vnd.openxmlformats-officedocument.spreadsheetml.sheet) localc $fx ;;
     image/vnd.djvu|application/pdf|application/octet-stream|application/postscript) setsid -f zathura $fx >/dev/null 2>&1 ;;
-    text/*|application/json|inode/x-empty) $EDITOR $fx;;
+    text/*|application/json|inode/x-empty) $EDITOR "$f" ;;
     image/x-xcf) setsid -f gimp $f >/dev/null 2>&1 ;;
     image/*) setsid -f nsxiv $fx ;;
     audio/*) mpv --audio-display=no $fx ;;

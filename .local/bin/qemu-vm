@@ -3,11 +3,12 @@
 # qemu-vm <img>
 
 qemu-system-x86_64 \
-                  -enable-kvm -machine type=pc,accel=kvm \
-                  -m 8192 \
+                  -enable-kvm \
+                  -machine type=pc,accel=kvm \
+                  -m 16G \
                   -cpu host \
                   -display sdl,gl=on \
                   -device virtio-vga-gl \
                   -device ac97 \
-                  -smp 8 \
+                  -smp 12 \
                   -drive file="$1",media=disk,if=virtio

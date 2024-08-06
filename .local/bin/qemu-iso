@@ -1,13 +1,13 @@
 #!/bin/sh
 
-# qemu-iso img iso
+# qemu-iso iso img
 
 qemu-system-x86_64 \
                   -enable-kvm -machine type=pc,accel=kvm \
-                  -m 8192 \
+                  -m 16G \
                   -cpu host \
                   -display sdl,gl=on \
                   -device virtio-vga-gl \
-                  -smp 8 \
-                  -drive file="$1",media=disk,if=virtio \
-                  -cdrom "$2"
+                  -smp 12 \
+                  -cdrom "$1" \
+                  -drive file="$2",media=disk,if=virtio

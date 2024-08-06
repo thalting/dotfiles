@@ -4,17 +4,6 @@
 Xcursor.theme: Adwaita
 
 ! ----------------------------------------------------------
-! urxvt
-! ----------------------------------------------------------
-URxvt.font: xft:Cozette, xft:Noto Color Emoji:size=8
-URxvt.foreground: #d8d8d8
-URxvt.background: #0c0c0d
-URxvt.saveLines: 0
-URxvt.internalBorder: 20
-URxvt.refreshRate: 0
-URxvt.scrollBar: false
-
-! ----------------------------------------------------------
 ! dmenu
 ! ----------------------------------------------------------
 dmenu.font: Cozette:size=12.5

@@ -1,0 +1,72 @@
+@theme "/dev/null"
+
+* {
+  bg:                   #0c0c0b;
+  fg:                   #eeeeee;
+  hover:                #0c0c0b;
+  background-color:     transparent;
+  text-color:           @fg;
+}
+
+configuration {
+  show-icons:           false;
+  font:                 "Cozette 9";
+  run {
+    display-name:       "";
+  }
+  dmenu {
+    display-name:       "";
+  }
+}
+
+window {
+  background-color:     @bg;
+  transparency:         "real";
+  width:                30%;
+  height:               20%;
+  border:               2px;
+  border-color:         @fg;
+  children:             [inputbar, listview];
+}
+
+entry {
+  background-color:     transparent;
+  color:                @fg;
+  expand:               true;
+  blink:                true;
+}
+
+inputbar {
+  expand:               false;
+  background-color:     @bg;
+  padding:              0px 5px;
+}
+
+listview {
+  background-color:     @bg;
+  cycle:                true;
+  layout:               vertical;
+  dynamic:              true;
+  columns:              1;
+}
+
+element {
+  background-color:     transparent;
+  orientation:          vertical;
+  padding:              0px 5px;
+}
+
+element-text {
+  background-color:     transparent;
+  expand:               true;
+  horizontal-align:     0;
+  vertical-align:       1;
+  margin:               0 4px;
+  text-color:           inherit;
+  highlight:            #ba8baf;
+}
+
+element selected.normal {
+  text-color:           @hover;
+  background-color:     @fg;
+}
