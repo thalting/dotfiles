@@ -12,6 +12,7 @@ import XMonad.Actions.WindowBringer (gotoMenu, bringMenu)
 import XMonad.Actions.WithAll (sinkAll)
 import XMonad.Actions.TiledWindowDragging (dragWindow)
 import XMonad.Actions.CopyWindow (copy, kill1)
+import XMonad.Actions.ToggleFullFloat (toggleFullFloat, toggleFullFloatEwmhFullscreen)
 
 -- Hooks
 import XMonad.Hooks.EwmhDesktops (ewmh, ewmhFullscreen)
@@ -32,6 +33,7 @@ import XMonad.Layout.Spacing (Border (Border), spacingRaw, incScreenSpacing, dec
 import XMonad.Layout.ResizableTile (ResizableTall (ResizableTall), MirrorResize (MirrorShrink, MirrorExpand))
 import XMonad.Layout.DraggingVisualizer (draggingVisualizer)
 import XMonad.Layout.Fullscreen (fullscreenSupport)
+import XMonad.Layout.FocusTracking (focusTracking)
 
 -- Util
 import qualified XMonad.Util.Hacks as Hacks
@@ -42,9 +44,8 @@ import XMonad.Util.ClickableWorkspaces (clickablePP)
 
 -- Others
 import qualified Data.Map as M
+import Data.Maybe (mapMaybe)
 import System.Exit (exitSuccess)
-import XMonad.Layout.FocusTracking (focusTracking)
-import XMonad.Actions.ToggleFullFloat (toggleFullFloat, toggleFullFloatEwmhFullscreen)
 {- ORMOLU_ENABLE -}
 
 myMask = mod4Mask
@@ -129,96 +130,120 @@ myCommands =
       ("setup-inputs", setupInputs)
     ]
 
+data Description = Desc String | Nil
+
+data Keys a = Key (String, a, Description) | Title String
+
 {- ORMOLU_DISABLE -}
-myAddKeys =
-  [ ("M-<Return>", spawn myTerminal),
-    ("M-p", spawn "rofi -show run"),
-    ("M-q", kill1),
-    ("M-S-q", io exitSuccess),
-    ("M-S-r", spawn "xmonad --recompile && xmonad --restart"),
-    ("M-S-<Return>", promote),
+myAddKeys' =
+  [ Title "Misc",
+    Key ("M-<Return>", spawn myTerminal, Desc "Spawn a new terminal"),
+    Key ("M-p", spawn "rofi -show run", Desc "Open the application launcher"),
+    Key ("M-q", kill1, Desc "Close the focused window"),
+    Key ("M-S-q", io exitSuccess, Desc "Quit Xmonad"),
+    Key ("M-S-r", spawn "xmonad --recompile && xmonad --restart", Desc "Recompile and restart Xmonad"),
+    Key ("M-S-<Return>", promote, Desc "Promote the focused window to the master window"),
 
-    ("M-<Down>", sendMessage MirrorShrink),
-    ("M-<Up>", sendMessage MirrorExpand),
-    ("M-<Left>", sendMessage Shrink),
-    ("M-<Right>", sendMessage Expand),
+    Title "Resizing the master/slave ratio",
+    Key ("M-<Down>", sendMessage MirrorShrink, Desc "Shrink the focused window vertically"),
+    Key ("M-<Up>", sendMessage MirrorExpand, Desc "Expand the focused window vertically"),
+    Key ("M-<Left>", sendMessage Shrink, Desc "Shrink the focused window horizontally"),
+    Key ("M-<Right>", sendMessage Expand, Desc "Expand the focused window horizontally"),
 
-    -- Resizing the master/slave ratio
-    ("M-a", sendMessage MirrorShrink),
-    ("M-z", sendMessage MirrorExpand),
+    Title "Move focus up or down the window stack",
+    Key ("M-j", windows focusDown, Desc "Focus the next window in the stack"),
+    Key ("M-k", windows focusUp, Desc "Focus the previous window in the stack"),
 
-    -- Move focus up or down the window stack
-    ("M-j", windows focusDown),
-    ("M-k", windows focusUp),
+    Title "Resizing the master/slave ratio",
+    Key ("M-h", sendMessage Shrink, Desc "Shrink the focused window"),
+    Key ("M-l", sendMessage Expand, Desc "Expand the focused window"),
 
-    -- Resizing the master/slave ratio
-    ("M-h", sendMessage Shrink),
-    ("M-l", sendMessage Expand),
+    Title "Modifying the window order",
+    Key ("M-S-j", windows swapDown, Desc "Swap the focused window with the next window in the stack"),
+    Key ("M-S-k", windows swapUp, Desc "Swap the focused window with the previous window in the stack"),
 
-    -- Modifying the window order
-    ("M-S-j", windows swapDown),
-    ("M-S-k", windows swapUp),
+    Title "Commands",
+    Key ("M-x x", myCommands >>= runCommand, Desc "Run a custom command"),
 
-    -- Commands
-    ("M-x x", myCommands >>= runCommand),
+    Title "Window Finder",
+    Key ("M-x g", gotoMenu, Desc "Go to a window by name"),
+    Key ("M-x b", bringMenu, Desc "Bring a window to the current workspace by name"),
 
-    -- Window Finder
-    ("M-x g", gotoMenu),
-    ("M-x b", bringMenu),
+    Title "CycleWS",
+    Key ("M-<Tab>", toggleWS, Desc "Toggle between visible workspaces"),
+    Key ("M-,", prevWS, Desc "Switch to the previous workspace"),
+    Key ("M-.", nextWS, Desc "Switch to the next workspace"),
 
-    -- CycleWS
-    ("M-<Tab>", toggleWS),
-    ("M-,", prevWS),
-    ("M-.", nextWS),
+    Title "Layouts",
+    Key ("M-t", sendMessage $ JumpToLayout "Tiled", Desc "Switch to the Tiled layout"),
+    Key ("M-w", sendMessage $ JumpToLayout "Tabbed", Desc "Switch to the Tabbed layout"),
+    Key ("M-m", sendMessage $ JumpToLayout "Monocle", Desc "Switch to the Monocle layout"),
+    Key ("M-f", sendMessage $ JumpToLayout "Floating", Desc "Switch to the Floating layout"),
 
-    -- Layouts
-    ("M-t", sendMessage $ JumpToLayout "Tiled"),
-    ("M-w", sendMessage $ JumpToLayout "Tabbed"),
-    ("M-m", sendMessage $ JumpToLayout "Monocle"),
-    ("M-f", sendMessage $ JumpToLayout "Floating"),
+    Key ("M-S-<Space>", asks (layoutHook . config) >>= setLayout, Desc "Set the current layout to the selected one"),
 
-    ("M-S-<Space>", asks (layoutHook . config) >>= setLayout),
+    Title "Easy Motion",
+    Key ("M-\\", selectWindow myEMConf >>= (`whenJust` windows . focusWindow), Desc "Select a window using Easy Motion"),
 
-    -- Easy Motion
-    ("M-\\", selectWindow myEMConf >>= (`whenJust` windows . focusWindow)),
+    Title "Modal",
+    Key ("M1-S-f", setMode floatModeLabel, Desc "Enter float mode"),
 
-    -- Modal
-    ("M1-S-f", setMode floatModeLabel),
+    Title "Toggle Xmobar",
+    Key ("M-S-b", spawn "dbus-send --session --dest=org.Xmobar.Control --type=method_call '/org/Xmobar/Control' org.Xmobar.Control.SendSignal \"string:Toggle 0\"", Desc "Toggle Xmobar visibility"),
 
-    -- Toggle Xmobar
-    ("M-S-b", spawn "dbus-send --session --dest=org.Xmobar.Control --type=method_call '/org/Xmobar/Control' org.Xmobar.Control.SendSignal \"string:Toggle 0\""),
+    Title "Toggle Picom",
+    Key ("M-C-S-p", cycleAction "togglePicom" [spawn "notify-send 'Picom: OFF' && pkill picom", spawn "notify-send 'Picom: ON' && picom"], Desc "Toggle Picom compositing"),
 
-    -- Toggle Picom
-    ("M-C-S-p", cycleAction "togglePicom" [spawn "notify-send 'Picom: OFF' && pkill picom", spawn "notify-send 'Picom: ON' && picom"]),
+    Title "Increase or decrease number of windows in the master area",
+    Key ("M-i", sendMessage $ IncMasterN 1, Desc "Increase the number of windows in the master area"),
+    Key ("M-d", sendMessage $ IncMasterN $ -1, Desc "Decrease the number of windows in the master area"),
 
-    -- increase or decrease number of windows in the master area
-    ("M-i", sendMessage $ IncMasterN 1),
-    ("M-d", sendMessage $ IncMasterN $ -1),
+    Title "Push all window back into tiling",
+    Key ("M-S-C-<Space>", sinkAll, Desc "Push all windows back into tiling"),
+    Title "Push window back into tiling",
+    Key ("M-<Space>", withFocused $ windows . sink, Desc "Push the focused window back into tiling"),
 
-    -- Push all window back into tiling
-    ("M-S-C-<Space>", sinkAll),
-    -- Push window back into tiling
-    ("M-<Space>", withFocused $ windows . sink),
+    Key ("M-S-f", withFocused toggleFullFloat, Desc "Toggle full float for the focused window"),
 
-    ("M-S-f", withFocused toggleFullFloat),
+    Title "Spacing",
+    Key ("M-C-S-r", setScreenWindowSpacing 5, Desc "Set the window spacing for the current screen"),
+    Key ("M-C-S-k", incScreenSpacing 5, Desc "Increase the window spacing for the current screen"),
+    Key ("M-C-S-j", decScreenSpacing 5, Desc "Decrease the window spacing for the current screen"),
+    Key ("M-C-S-l", incWindowSpacing 5, Desc "Increase the window spacing"),
+    Key ("M-C-S-h", decWindowSpacing 5, Desc "Decrease the window spacing"),
 
-    -- Spacing
-    ("M-C-S-r", setScreenWindowSpacing 5),
-    ("M-C-S-k", incScreenSpacing 5),
-    ("M-C-S-j", decScreenSpacing 5),
-    ("M-C-S-l", incWindowSpacing 5),
-    ("M-C-S-h", decWindowSpacing 5),
+    Title "Media Keys",
+    Key ("<XF86AudioRaiseVolume>", spawn "wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+ && client --name vol", Desc "Increase the volume"),
+    Key ("<XF86AudioLowerVolume>", spawn "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && client --name vol", Desc "Decrease the volume"),
+    Key ("<XF86AudioMute>", spawn "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && client --name vol", Desc "Toggle mute"),
+    Key ("<XF86AudioPrev>", spawn "playerctl previous", Desc "Play the previous track"),
+    Key ("<XF86AudioPlay>", spawn "playerctl play-pause", Desc "Play/Pause media"),
+    Key ("<XF86AudioNext>", spawn "playerctl next", Desc "Play the next track"),
+    Key ("<Print>", spawn "screenshot", Desc "Take a screenshot"),
 
-    -- Media Keys
-    ("<XF86AudioRaiseVolume>", spawn "wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+ && client --name vol"),
-    ("<XF86AudioLowerVolume>", spawn "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && client --name vol"),
-    ("<XF86AudioMute>", spawn "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && client --name vol"),
-    ("<XF86AudioPrev>", spawn "playerctl previous"),
-    ("<XF86AudioPlay>", spawn "playerctl play-pause"),
-    ("<XF86AudioNext>", spawn "playerctl next"),
-    ("<Print>", spawn "screenshot")
+    Key ("M-x h", xmessage help, Desc "Display help")
   ]
 {- ORMOLU_ENABLE -}
+
+myAddKeys = mapMaybe getKeyAndFn myAddKeys'
+  where
+    getKeyAndFn (Key (x, y, _)) = Just (x, y)
+    getKeyAndFn (Title _) = Nothing
+
+help = unlines $ map addPadding listRaw
+  where
+    getKeyAndDesc (Key (x, _, Desc y)) = [x, y]
+    getKeyAndDesc (Key (x, _, Nil)) = [x]
+    getKeyAndDesc (Title x) = ["\n" ++ x]
+
+    keyLength [x] = length x
+    keyLength [x, _] = length x
+    largestKeySize = maximum $ map keyLength listRaw
+
+    addPadding [x] = x
+    addPadding [x, y] = x ++ concat (replicate (1 + largestKeySize - length x) " ") ++ y
+
+    listRaw = map getKeyAndDesc myAddKeys'
 
 myKeys (XConfig {modMask = modMask, workspaces = workspaces, layoutHook = layoutHook}) =
   M.fromList $
