@@ -1,6 +1,6 @@
 {- ORMOLU_DISABLE -}
 import XMonad
-import XMonad.StackSet (focusWindow, greedyView, shift, shiftMaster, sink, focusDown, focusUp, view, swapDown, swapUp)
+import XMonad.StackSet (focusWindow, greedyView, shift, shiftMaster, sink, focusDown, focusUp, view, swapDown, swapUp, layout, workspace, current)
 
 -- Actions
 import qualified XMonad.Actions.FlexibleResize as Flex
@@ -8,7 +8,7 @@ import XMonad.Actions.CycleWS (nextWS, prevWS, toggleWS)
 import XMonad.Actions.EasyMotion (EasyMotionConfig (..), fixedSize, selectWindow)
 import XMonad.Actions.Commands (runCommand)
 import XMonad.Actions.Promote (promote)
-import XMonad.Actions.WindowBringer (gotoMenu, bringMenu)
+import XMonad.Actions.WindowBringer (gotoMenu, bringMenu, copyMenu)
 import XMonad.Actions.WithAll (sinkAll)
 import XMonad.Actions.TiledWindowDragging (dragWindow)
 import XMonad.Actions.CopyWindow (copy, kill1)
@@ -17,26 +17,24 @@ import XMonad.Actions.ToggleFullFloat (toggleFullFloat, toggleFullFloatEwmhFulls
 -- Hooks
 import XMonad.Hooks.EwmhDesktops (ewmh, ewmhFullscreen)
 import XMonad.Hooks.ManageDocks (manageDocks, checkDock)
-import XMonad.Hooks.ManageHelpers (doCenterFloat, isDialog, transience, (-?>), isFullscreen, doFullFloat, doLower, transience')
 import XMonad.Hooks.Modal (floatMode, floatModeLabel, modal, setMode, logMode)
-import XMonad.Hooks.PositionStoreHooks (positionStoreEventHook, positionStoreManageHook)
-import XMonad.Hooks.StatusBar (defToggleStrutsKey, killStatusBar, spawnStatusBar, statusBarProp, withEasySB)
+import XMonad.Hooks.ManageHelpers (isDialog, isFullscreen, doFullFloat, doLower, transience')
+import XMonad.Hooks.StatusBar (defToggleStrutsKey, statusBarProp, withEasySB)
 import XMonad.Hooks.InsertPosition (insertPosition, Focus (Newer), Position (Below))
-import XMonad.Hooks.StatusBar.PP
+import XMonad.Hooks.RefocusLast (refocusLastLayoutHook, refocusLastWhen, isFloat)
+import XMonad.Hooks.StatusBar.PP (PP (..), xmobarStrip, xmobarColor, xmobarBorder, wrap, shorten)
 
 -- Layouts
-import XMonad.Layout.Tabbed
+import XMonad.Layout.Tabbed (Theme (..), shrinkText, tabbed)
+import XMonad.Layout.ResizableThreeColumns (ResizableThreeCol (ResizableThreeCol))
 import XMonad.Layout.NoBorders (Ambiguity (OnlyScreenFloat), lessBorders)
-import XMonad.Layout.PositionStoreFloat (positionStoreFloat)
 import XMonad.Layout.Renamed (Rename (Replace), renamed)
 import XMonad.Layout.Spacing (Border (Border), spacingRaw, incScreenSpacing, decScreenSpacing, incWindowSpacing, decWindowSpacing, setScreenWindowSpacing)
 import XMonad.Layout.ResizableTile (ResizableTall (ResizableTall), MirrorResize (MirrorShrink, MirrorExpand))
 import XMonad.Layout.DraggingVisualizer (draggingVisualizer)
-import XMonad.Layout.Fullscreen (fullscreenSupport)
 import XMonad.Layout.FocusTracking (focusTracking)
 
 -- Util
-import qualified XMonad.Util.Hacks as Hacks
 import XMonad.Util.ActionCycle (cycleAction)
 import XMonad.Util.Cursor (setDefaultCursor)
 import XMonad.Util.EZConfig (additionalKeysP)
@@ -81,17 +79,17 @@ myTabConfig =
       fontName = myFont
     }
 
-myLayout = fullscreenNoBorders $ focusTracking layouts
+myLayout = fullscreenNoBorders $ refocusLastLayoutHook $ focusTracking layouts
   where
-    layouts = tiled ||| monocle ||| floating ||| tab
+    layouts = tiled ||| columns ||| monocle ||| tab
 
     -- Alias and functions
     gaps i = spacingRaw False (Border i i i i) True (Border i i i i) True
     tabGaps i = spacingRaw False (Border i i i i) True (Border 0 0 0 0) True
 
     -- Custom layouts
-    floating = renamed [Replace "Floating"] positionStoreFloat
     monocle = renamed [Replace "Monocle"] $ gaps gapsWidth Full
+    columns = renamed [Replace "Columns"] $ gaps gapsWidth $ draggingVisualizer $ ResizableThreeCol nmaster delta ratio []
     tiled = renamed [Replace "Tiled"] $ gaps gapsWidth $ draggingVisualizer $ ResizableTall nmaster delta ratio []
     tab = renamed [Replace "Tabbed"] $ tabGaps (gapsWidth + 5) $ tabbed shrinkText myTabConfig
 
@@ -110,7 +108,7 @@ myEMConf =
       bgCol = "#0c0c0d",
       overlayF = fixedSize 30 30,
       borderCol = "#b8b8b8",
-      borderPx = 4,
+      borderPx = 2,
       emFont = myFont
     }
 
@@ -168,6 +166,7 @@ myAddKeys' =
     Title "Window Finder",
     Key ("M-x g", gotoMenu, Desc "Go to a window by name"),
     Key ("M-x b", bringMenu, Desc "Bring a window to the current workspace by name"),
+    Key ("M-x y", copyMenu, Desc "Copy a window to the current workspace by name"),
 
     Title "CycleWS",
     Key ("M-<Tab>", toggleWS, Desc "Toggle between visible workspaces"),
@@ -297,8 +296,7 @@ myXmobarPP =
     gray = xmobarColor "#404040" ""
 
 myManageHook =
-  positionStoreManageHook Nothing
-    <> manageDocks
+  manageDocks
     <> composeAll
       [ isFullscreen --> doFullFloat,
         isDialog --> doFloat,
@@ -309,8 +307,11 @@ myManageHook =
     <> manageHook def
 
 myHandleEventHook =
-  positionStoreEventHook
-    <> Hacks.windowedFullscreenFixEventHook
+  refocusLastWhen (isLayout "Tabbed" <||> isFloat) -- or (pure True) to always refocus last
+  where
+    isLayout layoutName = ls >>= \x -> pure $ x == layoutName
+      where
+        ls = liftX . withWindowSet $ pure . description . layout . workspace . current
 
 setupInputs = do
   spawn "xinput set-prop 'pointer:Compx VXE NordicMouse 1K Dongle' 'libinput Accel Speed' -0.75"
@@ -343,8 +344,6 @@ myConfig =
 
 main =
   xmonad
-    . Hacks.javaHack
-    . fullscreenSupport
     . toggleFullFloatEwmhFullscreen
     . ewmhFullscreen
     . ewmh
