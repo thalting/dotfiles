@@ -44,6 +44,9 @@ import XMonad.Util.ClickableWorkspaces (clickablePP)
 import qualified Data.Map as M
 import Data.Maybe (mapMaybe)
 import System.Exit (exitSuccess)
+import System.Directory.Extra (listFilesRecursive)
+import System.Environment (getEnv)
+import System.Random (randomRIO)
 {- ORMOLU_ENABLE -}
 
 myMask = mod4Mask
@@ -314,14 +317,23 @@ myHandleEventHook =
         ls = liftX . withWindowSet $ pure . description . layout . workspace . current
 
 setupInputs = do
+  spawn "xset r rate 300 60"
   spawn "xinput set-prop 'pointer:Compx VXE NordicMouse 1K Dongle' 'libinput Accel Speed' -0.75"
   spawn "xinput set-prop 'Primax Kensington Eagle Trackball' 'libinput Natural Scrolling Enabled' 1"
   spawn "xinput set-prop 'Primax Kensington Eagle Trackball' 'libinput Left Handed Enabled' 1"
 
+choice xs = randomRIO (0, length xs - 1) >>= \index -> pure (xs !! index)
+
+randomWallpaper = do
+  home <- getEnv "HOME"
+  wallpapers <- listFilesRecursive $ home ++ "/pictures/wallpapers/"
+  wallpaper <- choice wallpapers
+  spawn $ unwords ["xwallpaper", "--zoom", "'" ++ wallpaper ++ "'"]
+
 myStartupHook = do
+  io randomWallpaper
   setDefaultCursor xC_left_ptr
   setupInputs
-  spawn "xrandr --output HDMI-0 --mode 1920x1080 --rate 74.97"
 
 myConfig =
   def
