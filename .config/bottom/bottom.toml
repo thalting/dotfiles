@@ -1,2 +1,2 @@
 [flags]
-mem_as_value = true
+process_memory_as_value = true

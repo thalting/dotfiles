@@ -32,7 +32,7 @@ if status is-login
     set -x XDG_DATA_HOME "$HOME/.local/share"
 
     set -x GOPATH "$XDG_DATA_HOME/go"
-    set -x PYTHONSTARTUP "$XDG_CONFIG_HOME/python/.pythonrc"
+    set -x PYTHONSTARTUP "$XDG_CONFIG_HOME/python/pythonrc"
     set -x ANDROID_USER_HOME "$XDG_DATA_HOME/android"
     set -x CARGO_HOME "$XDG_DATA_HOME/cargo"
     set -x CUDA_CACHE_PATH "$XDG_CACHE_HOME/nv"

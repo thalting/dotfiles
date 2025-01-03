@@ -2,8 +2,6 @@
 
 xrdb -load "$XDG_CONFIG_HOME/X11/Xresources"
 
-xwallpaper --zoom "$HOME/pictures/wallpapers/street.png"
-
 xset s off -dpms
 
 exec picom &

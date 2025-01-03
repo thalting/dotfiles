@@ -9,3 +9,5 @@
 
 .config/mutt/riseupdir
 .config/mutt/airmaildir
+
+.config/fish/fish_variables
