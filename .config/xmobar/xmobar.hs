@@ -21,7 +21,7 @@ config =
       commands =
         [ Run XMonadLog,
           Run $ CommandReader "echo && playerctl --follow metadata --format '♫ {{default(trunc(artist, 20), \"N/A\")}} - {{default(trunc(title, 30), \"N/A\")}}'" "mpris",
-          Run $ CommandReader "sleep 1s && server --name vol" "volume",
+          Run $ CommandReader "server --name vol" "volume",
           Run $ Date "%A, %d %B %Y, %I:%M %p" "date" 30,
           Run StdinReader
         ],
