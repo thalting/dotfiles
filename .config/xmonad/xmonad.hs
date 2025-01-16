@@ -39,6 +39,7 @@ import XMonad.Util.ActionCycle (cycleAction)
 import XMonad.Util.Cursor (setDefaultCursor)
 import XMonad.Util.EZConfig (additionalKeysP)
 import XMonad.Util.ClickableWorkspaces (clickablePP)
+import XMonad.Util.SessionStart (isSessionStart, setSessionStarted, doOnce)
 
 -- Others
 import qualified Data.Map as M
@@ -331,9 +332,10 @@ randomWallpaper = do
   spawn $ unwords ["xwallpaper", "--zoom", "'" ++ wallpaper ++ "'"]
 
 myStartupHook = do
-  io randomWallpaper
+  doOnce $ io randomWallpaper
   setDefaultCursor xC_left_ptr
   setupInputs
+  setSessionStarted
 
 myConfig =
   def
