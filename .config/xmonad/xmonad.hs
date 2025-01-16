@@ -183,7 +183,7 @@ myAddKeys' =
     Key ("M-m", sendMessage $ JumpToLayout "Monocle", Desc "Switch to the Monocle layout"),
     Key ("M-f", sendMessage $ JumpToLayout "Floating", Desc "Switch to the Floating layout"),
 
-    Key ("M-S-<Space>", asks (layoutHook . config) >>= setLayout, Desc "Set the current layout to the selected one"),
+    Key ("M-S-C-<Space>", asks (layoutHook . config) >>= setLayout, Desc "Set the current layout to the selected one"),
 
     Title "Easy Motion",
     Key ("M-\\", selectWindow myEMConf >>= (`whenJust` windows . focusWindow), Desc "Select a window using Easy Motion"),
@@ -202,7 +202,7 @@ myAddKeys' =
     Key ("M-d", sendMessage $ IncMasterN $ -1, Desc "Decrease the number of windows in the master area"),
 
     Title "Push all window back into tiling",
-    Key ("M-S-C-<Space>", sinkAll, Desc "Push all windows back into tiling"),
+    Key ("M-S-<Space>", sinkAll, Desc "Push all windows back into tiling"),
     Title "Push window back into tiling",
     Key ("M-<Space>", withFocused $ windows . sink, Desc "Push the focused window back into tiling"),
 
