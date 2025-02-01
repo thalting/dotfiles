@@ -39,7 +39,7 @@ import XMonad.Util.ActionCycle (cycleAction)
 import XMonad.Util.Cursor (setDefaultCursor)
 import XMonad.Util.EZConfig (additionalKeysP)
 import XMonad.Util.ClickableWorkspaces (clickablePP)
-import XMonad.Util.SessionStart (isSessionStart, setSessionStarted, doOnce)
+import XMonad.Util.SessionStart (setSessionStarted, doOnce)
 
 -- Others
 import qualified Data.Map as M
@@ -311,19 +311,20 @@ myManageHook =
     <> manageHook def
 
 myHandleEventHook =
-  refocusLastWhen (isLayout "Tabbed" <||> isFloat) -- or (pure True) to always refocus last
+  refocusLastWhen $ isLayout "Tabbed" <||> isFloat -- or (pure True) to always refocus last
   where
-    isLayout layoutName = ls >>= \x -> pure $ x == layoutName
+    isLayout layoutName = (layoutName ==) <$> ls
       where
         ls = liftX . withWindowSet $ pure . description . layout . workspace . current
 
 setupInputs = do
   spawn "xset r rate 300 60"
   spawn "xinput set-prop 'pointer:Compx VXE NordicMouse 1K Dongle' 'libinput Accel Speed' -0.75"
+  spawn "xinput set-prop 'pointer:Compx VXE NordicMouse 1K Dongle' 'libinput Accel Profile Enabled' 0 1 0"
   spawn "xinput set-prop 'Primax Kensington Eagle Trackball' 'libinput Natural Scrolling Enabled' 1"
   spawn "xinput set-prop 'Primax Kensington Eagle Trackball' 'libinput Left Handed Enabled' 1"
 
-choice xs = randomRIO (0, length xs - 1) >>= \index -> pure (xs !! index)
+choice xs = (xs !!) <$> randomRIO (0, length xs - 1)
 
 randomWallpaper = do
   home <- getEnv "HOME"
