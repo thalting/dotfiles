@@ -1,0 +1,4 @@
+[[commands]]
+name = 'vol'
+cmd = 'volst.lua'
+launch = true
