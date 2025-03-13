@@ -333,6 +333,7 @@ randomWallpaper = do
   spawn $ unwords ["xwallpaper", "--zoom", "'" ++ wallpaper ++ "'"]
 
 myStartupHook = do
+  spawn "xrandr --output HDMI-0 --mode 1920x1080 --rate 239.76"
   doOnce $ io randomWallpaper
   setDefaultCursor xC_left_ptr
   setupInputs
