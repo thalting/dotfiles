@@ -319,10 +319,15 @@ myHandleEventHook =
 
 setupInputs = do
   spawn "xset r rate 300 60"
-  spawn "xinput set-prop 'pointer:Compx VXE NordicMouse 1K Dongle' 'libinput Accel Speed' -0.75"
-  spawn "xinput set-prop 'pointer:Compx VXE NordicMouse 1K Dongle' 'libinput Accel Profile Enabled' 0 1 0"
-  spawn "xinput set-prop 'Primax Kensington Eagle Trackball' 'libinput Natural Scrolling Enabled' 1"
-  spawn "xinput set-prop 'Primax Kensington Eagle Trackball' 'libinput Left Handed Enabled' 1"
+  setupPointer "'pointer:Compx VXE NordicMouse 1K Dongle'"
+  setupPointer "'pointer:compx VXE R1 PRO MAX'"
+  where
+    setupPointer device =
+      mapM_
+        (spawn . unwords)
+        [ ["xinput", "set-prop", device, "'libinput Accel Speed'", "-0.75"],
+          ["xinput", "set-prop", device, "'libinput Accel Profile Enabled'", "0 1 0"]
+        ]
 
 choice xs = (xs !!) <$> randomRIO (0, length xs - 1)
 
