@@ -1,3 +1,5 @@
+#!/bin/sh
+
 # lf config
 set autoquit
 set ifs "\n"
@@ -6,6 +8,9 @@ set incsearch
 set relativenumber
 set mouse
 set cursorpreviewfmt "\033[7;2m"
+set info size
+set dircounts
+set watch
 
 cmd open ${{
     case $(file --mime-type "$(readlink -f $f)" -b) in
