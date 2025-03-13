@@ -129,7 +129,8 @@ myCommands =
       ("kill", kill),
       ("kill1", kill1),
       ("refresh", refresh),
-      ("setup-inputs", setupInputs)
+      ("setup-inputs", setupInputs),
+      ("random-wallpaper", io randomWallpaper)
     ]
 
 data Description = Desc String | Nil
